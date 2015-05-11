@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="Plantduino" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="4" osVersion="*" schemaVersion="2014-06.2.4">
+  <Role name="Worker">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=rumruk;AccountKey=MlvAzjPZP9LykmdBy/h77lq1Vd2aWMyGDlarmt0Fnrz/xv2jTUL2KJBkW1M2sMdTpETy/GPnXv96+qm0gSDKyA==" />
+      <Setting name="Microsoft.ServiceBus.ConnectionString" value="Endpoint=sb://rumruk.servicebus.windows.net;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=OEMkeTasvu11MOs7jLK6T76o0EnR8L51A1VbI5Cklqk=" />
+    </ConfigurationSettings>
+  </Role>
+</ServiceConfiguration>
