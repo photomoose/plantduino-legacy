@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "Plantduino", "Plantduino\Plantduino.ccproj", "{F1BAFA1A-C39A-44C5-BEAB-17D069C59F0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker", "Worker\Worker.csproj", "{4AC940FB-883B-4A2E-A09C-9D842103E869}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Worker", "Plantduino.Worker\Plantduino.Worker.csproj", "{4AC940FB-883B-4A2E-A09C-9D842103E869}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
