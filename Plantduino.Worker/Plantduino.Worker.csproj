@@ -73,6 +73,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -84,9 +87,44 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="Twilio.Api">
+      <HintPath>..\packages\Twilio.4.0.1\lib\3.5\Twilio.Api.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColdPeriodBeginHandler.cs" />
+    <Compile Include="ColdPeriodEndHandler.cs" />
+    <Compile Include="EventTypes.cs" />
+    <Compile Include="Handlers\ColdPeriodBegin.cs" />
+    <Compile Include="IQueueManager.cs" />
+    <Compile Include="IQueuePublisher.cs" />
+    <Compile Include="ISensorEventHandler.cs" />
+    <Compile Include="IServiceBusConfiguration.cs" />
+    <Compile Include="ISystemEventHandler.cs" />
+    <Compile Include="ITopicManager.cs" />
+    <Compile Include="ITopicSubscriber.cs" />
+    <Compile Include="ITwilioAccount.cs" />
+    <Compile Include="Messages\ColdPeriodEvent.cs" />
+    <Compile Include="Handlers\ColdPeriodHandler.cs" />
+    <Compile Include="DateTimeProvider.cs" />
+    <Compile Include="IDateTimeProvider.cs" />
+    <Compile Include="IElasticSearchWrapper.cs" />
+    <Compile Include="ITopicPublisher.cs" />
+    <Compile Include="ISensorEventIndex.cs" />
+    <Compile Include="Queues.cs" />
+    <Compile Include="SensorEventListener.cs" />
+    <Compile Include="SystemEventListener.cs" />
+    <Compile Include="ServiceBusEndpoint.cs" />
+    <Compile Include="Sms\ISmsClient.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="MessageSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Messages\SensorEvent.cs" />
+    <Compile Include="Handlers\SensorEventHandler.cs" />
+    <Compile Include="SensorEventIndex.cs" />
+    <Compile Include="Sms\TwilioSmsClient.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="TopicPaths.cs" />
     <Compile Include="WorkerRole.cs" />
   </ItemGroup>
   <ItemGroup>

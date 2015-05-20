@@ -7,6 +7,8 @@ Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "Plantduino", "Plantduino\Pl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Worker", "Plantduino.Worker\Plantduino.Worker.csproj", "{4AC940FB-883B-4A2E-A09C-9D842103E869}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Worker.Tests", "Plantduino.Worker.Tests\Plantduino.Worker.Tests.csproj", "{A504A4AA-B96B-4BDD-B17E-0CA3715874D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4AC940FB-883B-4A2E-A09C-9D842103E869}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AC940FB-883B-4A2E-A09C-9D842103E869}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AC940FB-883B-4A2E-A09C-9D842103E869}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A504A4AA-B96B-4BDD-B17E-0CA3715874D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A504A4AA-B96B-4BDD-B17E-0CA3715874D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A504A4AA-B96B-4BDD-B17E-0CA3715874D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A504A4AA-B96B-4BDD-B17E-0CA3715874D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,6 +5,8 @@
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="Microsoft.ServiceBus.ConnectionString" value="Endpoint=sb://rumruk.servicebus.windows.net;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=OEMkeTasvu11MOs7jLK6T76o0EnR8L51A1VbI5Cklqk=" />
+      <Setting name="TwilioAccountSid" value="" />
+      <Setting name="TwilioAuthToken" value="" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>
