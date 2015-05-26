@@ -1,24 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Net;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Elasticsearch.Net;
-using Elasticsearch.Net.Connection;
-
-using Microsoft.ServiceBus;
-using Microsoft.ServiceBus.Messaging;
-using Microsoft.WindowsAzure;
+using Autofac;
 using Microsoft.WindowsAzure.ServiceRuntime;
+using Rumr.Plantduino.Worker.Handlers;
+using Rumr.Plantduino.Worker.Sms;
 
-using Newtonsoft.Json;
-using Rumr.Plantduino.Worker;
-
-namespace Worker
+namespace Rumr.Plantduino.Worker
 {
     public class WorkerRole : RoleEntryPoint
     {
@@ -26,8 +15,8 @@ namespace Worker
 
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
-        private SystemEventListener _systemEventListener;
-        private SensorEventListener _sensorEventListener;
+        private TelemetryListener _telemetryListener;
+        private ILifetimeScope _scope;
 
         public override void Run()
         {
@@ -35,8 +24,8 @@ namespace Worker
 
             var tasks = new[]
             {
-                _systemEventListener.RunAsync(_cancellationTokenSource.Token),
-                _sensorEventListener.RunAsync(_cancellationTokenSource.Token)
+                _telemetryListener.RunAsync(_cancellationTokenSource.Token)
+                //_sensorEventListener.RunAsync(_cancellationTokenSource.Token)
             };
 
             Task.WhenAll(tasks).Wait();
@@ -49,16 +38,30 @@ namespace Worker
             // Set the maximum number of concurrent connections 
             ServicePointManager.DefaultConnectionLimit = 12;
 
-            var serviceBusEndpoint = new ServiceBusEndpoint(new Configuration());
+            var builder = new ContainerBuilder();
+            builder.RegisterType<Configuration>()
+                .As<IServiceBusConfiguration>()
+                .As<ITwilioAccount>()
+                .As<IConfiguration>();
+            builder.RegisterType<ServiceBusEndpoint>()
+                .As<ITopicSubscriber>()
+                .As<ITopicPublisher>()
+                .As<ITopicManager>();
+            builder.RegisterType<TemperatureHandler>().As<ITelemetryHandler>();
+            builder.RegisterType<LuxHandler>().As<ITelemetryHandler>();
+            builder.RegisterType<TelemetryListener>().AsSelf();
+            builder.RegisterType<TwilioSmsClient>().As<ISmsClient>();
+            var container = builder.Build();
 
-            var handlers = new ISystemEventHandler[] {new ColdPeriodBeginHandler(serviceBusEndpoint), new ColdPeriodEndHandler(serviceBusEndpoint)};
-            _systemEventListener = new SystemEventListener(new ServiceBusEndpoint(new Configuration()), handlers);
-            _sensorEventListener = new SensorEventListener(serviceBusEndpoint, serviceBusEndpoint, new ISensorEventHandler[] {});
+            _scope = container.BeginLifetimeScope();
+
+            _telemetryListener = _scope.Resolve<TelemetryListener>();
+            var topicManager = _scope.Resolve<ITopicManager>();
 
             var tasks = new[]
             {
-                _systemEventListener.InitializeAsync(),
-                _sensorEventListener.InitializeAsync()
+                _telemetryListener.InitializeAsync(),
+                topicManager.CreateTopicAsync(Topics.Commands)
             };
 
             Task.WhenAll(tasks).Wait();
@@ -71,6 +74,8 @@ namespace Worker
             _cancellationTokenSource.Cancel();
 
             _runCompleteEvent.WaitOne();
+
+            _scope.Dispose();
 
             base.OnStop();
         }

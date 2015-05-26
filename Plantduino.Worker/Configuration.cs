@@ -2,7 +2,7 @@ using Microsoft.WindowsAzure;
 
 namespace Rumr.Plantduino.Worker
 {
-    public class Configuration : ITwilioAccount, IServiceBusConfiguration
+    public class Configuration : ITwilioAccount, IServiceBusConfiguration, IConfiguration
     {
         public string AccountSid
         {
@@ -18,5 +18,15 @@ namespace Rumr.Plantduino.Worker
         {
             get { return CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString"); }
         }
+
+        public double ColdSpellTemp
+        {
+            get { return double.Parse(CloudConfigurationManager.GetSetting("ColdSpellTemp")); }
+        }
+    }
+
+    public interface IConfiguration
+    {
+        double ColdSpellTemp { get; }
     }
 }

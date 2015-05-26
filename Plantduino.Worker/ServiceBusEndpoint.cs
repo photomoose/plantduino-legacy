@@ -4,12 +4,7 @@ using Microsoft.ServiceBus.Messaging;
 
 namespace Rumr.Plantduino.Worker
 {
-    public interface IQueueReceiver
-    {
-        Task<BrokeredMessage> ReceiveFromQueueAsync(string queuePath);
-    }
-
-    public class ServiceBusEndpoint : ITopicPublisher, ITopicManager, ITopicSubscriber, IQueueManager, IQueuePublisher, IQueueReceiver
+    public class ServiceBusEndpoint : ITopicPublisher, ITopicManager, ITopicSubscriber
     {
         private readonly MessagingFactory _factory;
         private readonly NamespaceManager _namespaceManager;
@@ -18,39 +13,6 @@ namespace Rumr.Plantduino.Worker
         {
             _factory = MessagingFactory.CreateFromConnectionString(configuration.ConnectionString);
             _namespaceManager = NamespaceManager.CreateFromConnectionString(configuration.ConnectionString);
-        }
-
-        public async Task CreateQueueAsync(string queuePath)
-        {
-            var qd = new QueueDescription(queuePath);
-
-            await CreateQueueAsync(qd);
-        }
-
-        public async Task CreateQueueAsync(QueueDescription queueDescription)
-        {
-            var exists = await _namespaceManager.QueueExistsAsync(queueDescription.Path);
-
-            if (!exists)
-            {
-                await _namespaceManager.CreateQueueAsync(queueDescription);
-            }
-        }
-
-        public async Task<BrokeredMessage> ReceiveFromQueueAsync(string queuePath)
-        {
-            var client = _factory.CreateQueueClient(queuePath);
-
-            return await client.ReceiveAsync();
-        }
-
-        public async Task SendToQueueAsync(string queuePath, Message message)
-        {
-            var brokeredMessage = MessageSerializer.Map(message);
-
-            var client = _factory.CreateQueueClient(queuePath);
-
-            await client.SendAsync(brokeredMessage);
         }
 
         public async Task CreateTopicAsync(string topicPath)
@@ -83,13 +45,11 @@ namespace Rumr.Plantduino.Worker
             }
         }
 
-        public async Task SendToTopicAsync(string topicPath, Message message)
+        public async Task SendToTopicAsync(string topicPath, BrokeredMessage message)
         {
-            var msg = MessageSerializer.Map(message);
-
             var client = _factory.CreateTopicClient(topicPath);
 
-            await client.SendAsync(msg);
+            await client.SendAsync(message);
         }
 
         public async Task<BrokeredMessage> ReceiveFromTopicAsync(string topicPath, string subscriptionName)

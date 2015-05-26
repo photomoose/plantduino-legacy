@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,12 +8,12 @@ using Microsoft.ServiceBus.Messaging;
 
 namespace Rumr.Plantduino.Worker
 {
-    public class SystemEventListener
+    public class TelemetryListener
     {
         private readonly ITopicManager _topicManager;
-        private readonly IEnumerable<ISystemEventHandler> _handlers;
+        private readonly IEnumerable<ITelemetryHandler> _handlers;
 
-        public SystemEventListener(ITopicManager topicManager, IEnumerable<ISystemEventHandler> handlers)
+        public TelemetryListener(ITopicManager topicManager, IEnumerable<ITelemetryHandler> handlers)
         {
             _topicManager = topicManager;
             _handlers = handlers;
@@ -20,7 +21,7 @@ namespace Rumr.Plantduino.Worker
 
         public async Task InitializeAsync()
         {
-            await _topicManager.CreateTopicAsync(TopicPaths.SystemEvents);
+            await _topicManager.CreateTopicAsync(Topics.Telemetry);
 
             var subscriptions = _handlers.Select(CreateSubscriptionAsync);
 
@@ -38,23 +39,28 @@ namespace Rumr.Plantduino.Worker
 
         private IEnumerable<Func<CancellationToken, Task>> CreateTaskBuilders()
         {
-            var tasks = _handlers.Select<ISystemEventHandler, Func<CancellationToken, Task>>(
+            var tasks = _handlers.Select<ITelemetryHandler, Func<CancellationToken, Task>>(
                 h => async token =>
                 {
                     while (!token.IsCancellationRequested)
                     {
-                        await h.ReceiveAsync();
+                        try
+                        {
+                            await h.ReceiveAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            Trace.TraceError(ex.ToString());
+                        }
                     }
                 });
 
             return tasks;
         }
 
-        private async Task CreateSubscriptionAsync(ISystemEventHandler handler)
+        private async Task CreateSubscriptionAsync(ITelemetryHandler handler)
         {
-            var name = handler.Name;
-
-            var sd = new SubscriptionDescription(TopicPaths.SystemEvents, name);
+            var sd = new SubscriptionDescription(Topics.Telemetry, handler.SubscriptionName);
 
             await _topicManager.CreateSubscriptionAsync(sd, handler.SubscriptionFilter);
         }

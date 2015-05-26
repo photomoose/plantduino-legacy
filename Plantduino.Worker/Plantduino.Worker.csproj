@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="Elasticsearch.Net">
       <HintPath>..\packages\Elasticsearch.Net.1.4.3\lib\net45\Elasticsearch.Net.dll</HintPath>
     </Reference>
@@ -77,14 +80,19 @@
       <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections" />
+    <Reference Include="System.ComponentModel" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.Contracts" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Spatial, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Spatial.5.6.2\lib\net40\System.Spatial.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Twilio.Api">
@@ -92,39 +100,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColdPeriodBeginHandler.cs" />
-    <Compile Include="ColdPeriodEndHandler.cs" />
-    <Compile Include="EventTypes.cs" />
-    <Compile Include="Handlers\ColdPeriodBegin.cs" />
-    <Compile Include="IQueueManager.cs" />
-    <Compile Include="IQueuePublisher.cs" />
-    <Compile Include="ISensorEventHandler.cs" />
+    <Compile Include="Commands\ColdLedOffCommand.cs" />
+    <Compile Include="Commands\ColdLedOnCommand.cs" />
+    <Compile Include="Handlers\TemperatureHandler.cs" />
+    <Compile Include="Handlers\LuxHandler.cs" />
+    <Compile Include="Telemetry\LuxTelemetry.cs" />
+    <Compile Include="Subscriptions.cs" />
     <Compile Include="IServiceBusConfiguration.cs" />
-    <Compile Include="ISystemEventHandler.cs" />
+    <Compile Include="ITelemetryHandler.cs" />
     <Compile Include="ITopicManager.cs" />
     <Compile Include="ITopicSubscriber.cs" />
     <Compile Include="ITwilioAccount.cs" />
-    <Compile Include="Messages\ColdPeriodEvent.cs" />
-    <Compile Include="Handlers\ColdPeriodHandler.cs" />
-    <Compile Include="DateTimeProvider.cs" />
-    <Compile Include="IDateTimeProvider.cs" />
-    <Compile Include="IElasticSearchWrapper.cs" />
     <Compile Include="ITopicPublisher.cs" />
-    <Compile Include="ISensorEventIndex.cs" />
-    <Compile Include="Queues.cs" />
-    <Compile Include="SensorEventListener.cs" />
-    <Compile Include="SystemEventListener.cs" />
+    <Compile Include="TelemetryListener.cs" />
     <Compile Include="ServiceBusEndpoint.cs" />
     <Compile Include="Sms\ISmsClient.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="MessageSerializer.cs" />
+    <Compile Include="MessageMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Messages\SensorEvent.cs" />
-    <Compile Include="Handlers\SensorEventHandler.cs" />
-    <Compile Include="SensorEventIndex.cs" />
+    <Compile Include="Telemetry\Message.cs" />
+    <Compile Include="Telemetry\TemperatureTelemetry.cs" />
     <Compile Include="Sms\TwilioSmsClient.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="TopicPaths.cs" />
+    <Compile Include="Topics.cs" />
     <Compile Include="WorkerRole.cs" />
   </ItemGroup>
   <ItemGroup>

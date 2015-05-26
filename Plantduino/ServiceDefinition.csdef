@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ServiceDefinition name="Plantduino" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2015-04.2.6">
-  <WorkerRole name="Plantduino.Worker" vmsize="Small">
+  <WorkerRole name="Plantduino.Worker" vmsize="ExtraSmall">
     <ConfigurationSettings>
       <Setting name="Microsoft.ServiceBus.ConnectionString" />
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
       <Setting name="TwilioAccountSid" />
       <Setting name="TwilioAuthToken" />
+      <Setting name="ColdSpellTemp" />
     </ConfigurationSettings>
   </WorkerRole>
 </ServiceDefinition>
