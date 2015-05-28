@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
+using Rumr.Plantduino.Worker.Telemetry;
 
 namespace Rumr.Plantduino.Worker
 {
@@ -50,6 +51,15 @@ namespace Rumr.Plantduino.Worker
             var client = _factory.CreateTopicClient(topicPath);
 
             await client.SendAsync(message);
+        }
+
+        public async Task SendToTopicAsync(string topicPath, Message message)
+        {
+            var brokeredMessage = MessageMapper.Map(message);
+
+            var client = _factory.CreateTopicClient(topicPath);
+
+            await client.SendAsync(brokeredMessage);
         }
 
         public async Task<BrokeredMessage> ReceiveFromTopicAsync(string topicPath, string subscriptionName)

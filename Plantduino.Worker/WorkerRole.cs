@@ -1,11 +1,15 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Microsoft.WindowsAzure.ServiceRuntime;
-using Rumr.Plantduino.Worker.Handlers;
+using Rumr.Plantduino.Worker.MessageHandlers;
 using Rumr.Plantduino.Worker.Sms;
+using Rumr.Plantduino.Worker.Subscriptions;
+using Rumr.Plantduino.Worker.Telemetry;
 
 namespace Rumr.Plantduino.Worker
 {
@@ -15,20 +19,14 @@ namespace Rumr.Plantduino.Worker
 
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
-        private TelemetryListener _telemetryListener;
         private ILifetimeScope _scope;
+        private IEnumerable<ITopicSubscription> _topicSubscriptions;
 
         public override void Run()
         {
             Trace.WriteLine("Starting processing of messages");
 
-            var tasks = new[]
-            {
-                _telemetryListener.RunAsync(_cancellationTokenSource.Token)
-                //_sensorEventListener.RunAsync(_cancellationTokenSource.Token)
-            };
-
-            Task.WhenAll(tasks).Wait();
+            Task.WhenAll(_topicSubscriptions.Select(ts => ts.ListenAsync(_cancellationTokenSource.Token))).Wait();
 
             _runCompleteEvent.Set();
         }
@@ -47,24 +45,26 @@ namespace Rumr.Plantduino.Worker
                 .As<ITopicSubscriber>()
                 .As<ITopicPublisher>()
                 .As<ITopicManager>();
-            builder.RegisterType<TemperatureHandler>().As<ITelemetryHandler>();
-            builder.RegisterType<LuxHandler>().As<ITelemetryHandler>();
-            builder.RegisterType<TelemetryListener>().AsSelf();
+            builder.RegisterType<TemperatureTelemetryHandler>().As<IMessageHandler<TemperatureTelemetry>>();
+            builder.RegisterType<LuxTelemetryHandler>().As<IMessageHandler<LuxTelemetry>>();
+            builder.RegisterType<TemperatureTelemetrySubscription>().As<ITopicSubscription>();
+            builder.RegisterType<LuxTelemetrySubscription>().As<ITopicSubscription>();
             builder.RegisterType<TwilioSmsClient>().As<ISmsClient>();
+
             var container = builder.Build();
 
             _scope = container.BeginLifetimeScope();
 
-            _telemetryListener = _scope.Resolve<TelemetryListener>();
             var topicManager = _scope.Resolve<ITopicManager>();
 
-            var tasks = new[]
-            {
-                _telemetryListener.InitializeAsync(),
-                topicManager.CreateTopicAsync(Topics.Commands)
-            };
+            Task.WhenAll(
+                topicManager.CreateTopicAsync(TopicNames.Telemetry),
+                topicManager.CreateTopicAsync(TopicNames.Commands))
+                .Wait();
 
-            Task.WhenAll(tasks).Wait();
+            _topicSubscriptions = _scope.Resolve<IEnumerable<ITopicSubscription>>();
+
+            Task.WhenAll(_topicSubscriptions.Select(ts => ts.InitializeAsync())).Wait();
 
             return base.OnStart();
         }

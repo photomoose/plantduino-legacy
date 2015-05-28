@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.ServiceBus.Messaging;
@@ -13,6 +14,16 @@ namespace Rumr.Plantduino.Worker
         {
             var json = new StreamReader(message.GetBody<Stream>(), Encoding.UTF8).ReadToEnd();
             var entity = JsonConvert.DeserializeObject<T>(json);
+            entity.DeviceId = (int)message.Properties["DeviceId"];
+            entity.EnqueuedTimeUtc = message.EnqueuedTimeUtc;
+
+            return entity;
+        }
+
+        public static Message Map(BrokeredMessage message, Type messageType)
+        {
+            var json = new StreamReader(message.GetBody<Stream>(), Encoding.UTF8).ReadToEnd();
+            var entity = (Message)JsonConvert.DeserializeObject(json, messageType);
             entity.DeviceId = (int)message.Properties["DeviceId"];
             entity.EnqueuedTimeUtc = message.EnqueuedTimeUtc;
 

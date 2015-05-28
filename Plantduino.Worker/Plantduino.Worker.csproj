@@ -102,17 +102,17 @@
   <ItemGroup>
     <Compile Include="Commands\ColdLedOffCommand.cs" />
     <Compile Include="Commands\ColdLedOnCommand.cs" />
-    <Compile Include="Handlers\TemperatureHandler.cs" />
-    <Compile Include="Handlers\LuxHandler.cs" />
+    <Compile Include="MessageHandlers\IMessageHandler.cs" />
+    <Compile Include="Subscriptions\ITopicSubscription.cs" />
+    <Compile Include="MessageHandlers\LuxTelemetryHandler.cs" />
     <Compile Include="Telemetry\LuxTelemetry.cs" />
-    <Compile Include="Subscriptions.cs" />
+    <Compile Include="SubscriptionNames.cs" />
     <Compile Include="IServiceBusConfiguration.cs" />
-    <Compile Include="ITelemetryHandler.cs" />
     <Compile Include="ITopicManager.cs" />
     <Compile Include="ITopicSubscriber.cs" />
     <Compile Include="ITwilioAccount.cs" />
     <Compile Include="ITopicPublisher.cs" />
-    <Compile Include="TelemetryListener.cs" />
+    <Compile Include="Subscriptions\LuxTelemetrySubscription.cs" />
     <Compile Include="ServiceBusEndpoint.cs" />
     <Compile Include="Sms\ISmsClient.cs" />
     <Compile Include="MessageMapper.cs" />
@@ -121,7 +121,9 @@
     <Compile Include="Telemetry\TemperatureTelemetry.cs" />
     <Compile Include="Sms\TwilioSmsClient.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="Topics.cs" />
+    <Compile Include="Subscriptions\TemperatureTelemetrySubscription.cs" />
+    <Compile Include="MessageHandlers\TemperatureTelemetryHandler.cs" />
+    <Compile Include="TopicNames.cs" />
     <Compile Include="WorkerRole.cs" />
   </ItemGroup>
   <ItemGroup>
