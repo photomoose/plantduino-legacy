@@ -76,9 +76,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp">
-      <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections" />
     <Reference Include="System.ComponentModel" />
@@ -95,40 +92,32 @@
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Twilio.Api">
-      <HintPath>..\packages\Twilio.4.0.1\lib\3.5\Twilio.Api.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\ColdLedOffCommand.cs" />
-    <Compile Include="Commands\ColdLedOnCommand.cs" />
-    <Compile Include="MessageHandlers\IMessageHandler.cs" />
-    <Compile Include="Subscriptions\ITopicSubscription.cs" />
-    <Compile Include="MessageHandlers\LuxTelemetryHandler.cs" />
-    <Compile Include="Telemetry\LuxTelemetry.cs" />
-    <Compile Include="SubscriptionNames.cs" />
-    <Compile Include="IServiceBusConfiguration.cs" />
-    <Compile Include="ITopicManager.cs" />
-    <Compile Include="ITopicSubscriber.cs" />
-    <Compile Include="ITwilioAccount.cs" />
-    <Compile Include="ITopicPublisher.cs" />
-    <Compile Include="Subscriptions\LuxTelemetrySubscription.cs" />
-    <Compile Include="ServiceBusEndpoint.cs" />
-    <Compile Include="Sms\ISmsClient.cs" />
-    <Compile Include="MessageMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Telemetry\Message.cs" />
-    <Compile Include="Telemetry\TemperatureTelemetry.cs" />
-    <Compile Include="Sms\TwilioSmsClient.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="Subscriptions\TemperatureTelemetrySubscription.cs" />
-    <Compile Include="MessageHandlers\TemperatureTelemetryHandler.cs" />
-    <Compile Include="TopicNames.cs" />
     <Compile Include="WorkerRole.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Plantduino.Application\Plantduino.Application.csproj">
+      <Project>{374C4123-0DBB-4D02-97C7-9707774EEF09}</Project>
+      <Name>Plantduino.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plantduino.Domain\Plantduino.Domain.csproj">
+      <Project>{11FFCB40-8B44-47E8-9D8C-87C82756B60C}</Project>
+      <Name>Plantduino.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plantduino.Infrastructure.ServiceBus\Plantduino.Infrastructure.ServiceBus.csproj">
+      <Project>{C7942C07-0AF2-4408-B2B4-ABE6BE05803B}</Project>
+      <Name>Plantduino.Infrastructure.ServiceBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plantduino.Infrastructure.Twilio\Plantduino.Infrastructure.Twilio.csproj">
+      <Project>{D830FF12-2E34-4798-B87F-97F8222BB06E}</Project>
+      <Name>Plantduino.Infrastructure.Twilio</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -9,6 +9,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Worker", "Plantd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Worker.Tests", "Plantduino.Worker.Tests\Plantduino.Worker.Tests.csproj", "{A504A4AA-B96B-4BDD-B17E-0CA3715874D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Domain", "Plantduino.Domain\Plantduino.Domain.csproj", "{11FFCB40-8B44-47E8-9D8C-87C82756B60C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Application", "Plantduino.Application\Plantduino.Application.csproj", "{374C4123-0DBB-4D02-97C7-9707774EEF09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Infrastructure.ServiceBus", "Plantduino.Infrastructure.ServiceBus\Plantduino.Infrastructure.ServiceBus.csproj", "{C7942C07-0AF2-4408-B2B4-ABE6BE05803B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Infrastructure.Twilio", "Plantduino.Infrastructure.Twilio\Plantduino.Infrastructure.Twilio.csproj", "{D830FF12-2E34-4798-B87F-97F8222BB06E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +35,22 @@ Global
 		{A504A4AA-B96B-4BDD-B17E-0CA3715874D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A504A4AA-B96B-4BDD-B17E-0CA3715874D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A504A4AA-B96B-4BDD-B17E-0CA3715874D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11FFCB40-8B44-47E8-9D8C-87C82756B60C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11FFCB40-8B44-47E8-9D8C-87C82756B60C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11FFCB40-8B44-47E8-9D8C-87C82756B60C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11FFCB40-8B44-47E8-9D8C-87C82756B60C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{374C4123-0DBB-4D02-97C7-9707774EEF09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{374C4123-0DBB-4D02-97C7-9707774EEF09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{374C4123-0DBB-4D02-97C7-9707774EEF09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{374C4123-0DBB-4D02-97C7-9707774EEF09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7942C07-0AF2-4408-B2B4-ABE6BE05803B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7942C07-0AF2-4408-B2B4-ABE6BE05803B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7942C07-0AF2-4408-B2B4-ABE6BE05803B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7942C07-0AF2-4408-B2B4-ABE6BE05803B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D830FF12-2E34-4798-B87F-97F8222BB06E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D830FF12-2E34-4798-B87F-97F8222BB06E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D830FF12-2E34-4798-B87F-97F8222BB06E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D830FF12-2E34-4798-B87F-97F8222BB06E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
