@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Infrastructure.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Infrastructure.Twilio", "Plantduino.Infrastructure.Twilio\Plantduino.Infrastructure.Twilio.csproj", "{D830FF12-2E34-4798-B87F-97F8222BB06E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Infrastructure.Elastic", "Plantduino.Infrastructure.Elastic\Plantduino.Infrastructure.Elastic.csproj", "{78E93181-EC9E-48D6-9278-59D04D51F619}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{D830FF12-2E34-4798-B87F-97F8222BB06E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D830FF12-2E34-4798-B87F-97F8222BB06E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D830FF12-2E34-4798-B87F-97F8222BB06E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78E93181-EC9E-48D6-9278-59D04D51F619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78E93181-EC9E-48D6-9278-59D04D51F619}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78E93181-EC9E-48D6-9278-59D04D51F619}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78E93181-EC9E-48D6-9278-59D04D51F619}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

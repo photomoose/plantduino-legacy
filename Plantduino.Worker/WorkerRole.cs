@@ -17,6 +17,7 @@ using Rumr.Plantduino.Domain.Messages.Notifications;
 using Rumr.Plantduino.Domain.Messages.Telemetry;
 using Rumr.Plantduino.Domain.Services;
 using Rumr.Plantduino.Domain.Sms;
+using Rumr.Plantduino.Infrastructure.Elastic;
 using Rumr.Plantduino.Infrastructure.ServiceBus;
 
 namespace Rumr.Plantduino.Worker
@@ -63,6 +64,7 @@ namespace Rumr.Plantduino.Worker
             builder.RegisterType<TwilioSmsClient>().As<ISmsClient>();
             builder.RegisterType<TelemetryService>().As<ITelemetryService>();
             builder.RegisterType<NotificationService>().As<INotificationService>();
+            builder.RegisterType<ElasticIndexClient>().As<IIndexService>();
 
             var container = builder.Build();
 

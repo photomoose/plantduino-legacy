@@ -35,9 +35,6 @@
     <Reference Include="Autofac">
       <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="Elasticsearch.Net">
-      <HintPath>..\packages\Elasticsearch.Net.1.4.3\lib\net45\Elasticsearch.Net.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Data.Edm, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -68,9 +65,6 @@
     <Reference Include="Microsoft.WindowsAzure.Storage, Version=4.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\WindowsAzure.Storage.4.3.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
-    </Reference>
-    <Reference Include="Nest">
-      <HintPath>..\packages\NEST.1.4.3\lib\net45\Nest.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -109,6 +103,10 @@
     <ProjectReference Include="..\Plantduino.Domain\Plantduino.Domain.csproj">
       <Project>{11FFCB40-8B44-47E8-9D8C-87C82756B60C}</Project>
       <Name>Plantduino.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plantduino.Infrastructure.Elastic\Plantduino.Infrastructure.Elastic.csproj">
+      <Project>{78E93181-EC9E-48D6-9278-59D04D51F619}</Project>
+      <Name>Plantduino.Infrastructure.Elastic</Name>
     </ProjectReference>
     <ProjectReference Include="..\Plantduino.Infrastructure.ServiceBus\Plantduino.Infrastructure.ServiceBus.csproj">
       <Project>{C7942C07-0AF2-4408-B2B4-ABE6BE05803B}</Project>

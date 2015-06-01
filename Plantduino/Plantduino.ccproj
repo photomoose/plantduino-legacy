@@ -46,7 +46,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PublishProfile Include="Profiles\Plantduino2Production.azurePubxml" />
+    <PublishProfile Include="Profiles\Plantduino-App.azurePubxml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Plantduino.Worker\Plantduino.Worker.csproj">

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Rumr.Plantduino.Domain;
 using Rumr.Plantduino.Domain.Configuration;
 using Rumr.Plantduino.Domain.Messages.Notifications;
 using Rumr.Plantduino.Domain.Messages.Telemetry;
@@ -14,14 +15,16 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
         private readonly IConfiguration _configuration;
         private readonly ISmsClient _smsClient;
         private readonly INotificationService _notificationService;
+        private readonly IIndexService _indexService;
         private bool _isColdSpell;
         private DateTime _coldSpellStartUtc;
 
-        public TemperatureTelemetryHandler(IConfiguration configuration, ISmsClient smsClient, INotificationService notificationService)
+        public TemperatureTelemetryHandler(IConfiguration configuration, ISmsClient smsClient, INotificationService notificationService, IIndexService indexService)
         {
             _configuration = configuration;
             _smsClient = smsClient;
             _notificationService = notificationService;
+            _indexService = indexService;
         }
 
         public async Task HandleAsync(TemperatureTelemetry message)
@@ -58,6 +61,10 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
                         _configuration.ColdSpellTemp, 0, _coldSpellStartUtc,
                         coldSpellEndUtc));
             }
+
+            var index = new TemperatureTelemetryIndex(message.Temperature, message.DeviceId, message.EnqueuedTimeUtc);
+
+            await _indexService.IndexAsync(index);
         }
     }
 }
