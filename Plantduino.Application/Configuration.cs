@@ -9,5 +9,15 @@ namespace Rumr.Plantduino.Application
         {
             get { return double.Parse(CloudConfigurationManager.GetSetting("ColdSpellTemp")); }
         }
+
+        public string SmsFrom
+        {
+            get { return CloudConfigurationManager.GetSetting("SmsFrom"); }
+        }
+
+        public string SmsTo
+        {
+            get { return CloudConfigurationManager.GetSetting("SmsTo"); }
+        }
     }
 }

@@ -19,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Infrastructure.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Infrastructure.Elastic", "Plantduino.Infrastructure.Elastic\Plantduino.Infrastructure.Elastic.csproj", "{78E93181-EC9E-48D6-9278-59D04D51F619}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{03E3F6C3-F5C2-4F24-9E12-D5327BC1BC40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantduino.Application.Tests", "Plantduino.Application.Tests\Plantduino.Application.Tests.csproj", "{46AD0441-141E-4781-848E-60CD05D3614C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,8 +61,15 @@ Global
 		{78E93181-EC9E-48D6-9278-59D04D51F619}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78E93181-EC9E-48D6-9278-59D04D51F619}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78E93181-EC9E-48D6-9278-59D04D51F619}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46AD0441-141E-4781-848E-60CD05D3614C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46AD0441-141E-4781-848E-60CD05D3614C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46AD0441-141E-4781-848E-60CD05D3614C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46AD0441-141E-4781-848E-60CD05D3614C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{46AD0441-141E-4781-848E-60CD05D3614C} = {03E3F6C3-F5C2-4F24-9E12-D5327BC1BC40}
 	EndGlobalSection
 EndGlobal
