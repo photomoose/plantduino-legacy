@@ -7,7 +7,7 @@ using Rumr.Plantduino.Domain.Configuration;
 using Rumr.Plantduino.Domain.Messages.Notifications;
 using Rumr.Plantduino.Domain.Sms;
 
-namespace Plantduino.Application.Tests.Services.Handlers
+namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Notifications
 {
     [TestFixture]
     public class ColdSpellLeftNotificationHandlerTests
