@@ -18,7 +18,7 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Notifications
             _configuration = configuration;
         }
 
-        public Task HandleAsync(ColdSpellEnteredNotification message)
+        public async Task HandleAsync(ColdSpellEnteredNotification message)
         {
             Trace.TraceInformation("Received {0} message.", message.GetType().Name);
 
@@ -27,10 +27,8 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Notifications
             _smsClient.Send(_configuration.SmsFrom, _configuration.SmsTo, 
                 string.Format(
                 "{0}: Entered cold spell. (Temp: {1}C).", 
-                enteredAtLocal.ToString("t"),
+                enteredAtLocal.ToString("HH:mm"),
                 message.CurrentTemp.ToString("f1")));
-
-            return Task.FromResult(0);
         }
     }
 }

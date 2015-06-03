@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ITwilioAccount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TraceSmsClient.cs" />
     <Compile Include="TwilioAccount.cs" />
     <Compile Include="TwilioSmsClient.cs" />
   </ItemGroup>

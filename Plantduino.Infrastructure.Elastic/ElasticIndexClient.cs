@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Nest;
-using Rumr.Plantduino.Domain;
+using Rumr.Plantduino.Domain.Messages;
+using Rumr.Plantduino.Domain.Messages.Notifications;
 using Rumr.Plantduino.Domain.Messages.Telemetry;
 using Rumr.Plantduino.Domain.Services;
 
@@ -15,11 +16,19 @@ namespace Rumr.Plantduino.Infrastructure.Elastic
         {
             var node = new Uri("http://plantduino-kibana.cloudapp.net:9200");
             var settings = new ConnectionSettings(node);
-            settings.MapDefaultTypeIndices(d => d.Add(typeof(TelemetryIndex<TemperatureTelemetry>), "temperature-telemetry"));
+#if DEBUG
+            settings.MapDefaultTypeIndices(d => d.Add(typeof(TemperatureTelemetry), "dev-telemetry"));
+            settings.MapDefaultTypeIndices(d => d.Add(typeof(LuxTelemetry), "dev-telemetry"));
+            settings.MapDefaultTypeIndices(d => d.Add(typeof(ColdSpellEnteredNotification), "dev-notification"));
+            settings.MapDefaultTypeIndices(d => d.Add(typeof(ColdSpellLeftNotification), "dev-notification"));
+#else
+            settings.MapDefaultTypeIndices(d => d.Add(typeof(TemperatureTelemetry), "temperature-telemetry"));
+            settings.MapDefaultTypeIndices(d => d.Add(typeof(LuxTelemetry), "lux-telemetry"));
+#endif
             _client = new ElasticClient(settings);
         }
 
-        public async Task IndexAsync<T>(TelemetryIndex<T> message) where T : TelemetryMessage 
+        public async Task IndexMessageAsync<T>(T message) where T : Message
         {
             await _client.IndexAsync(message);
         }

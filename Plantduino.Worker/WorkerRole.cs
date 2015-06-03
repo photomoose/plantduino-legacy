@@ -57,11 +57,15 @@ namespace Rumr.Plantduino.Worker
             builder.RegisterType<LuxTelemetryHandler>().As<IMessageHandler<LuxTelemetry>>();
             builder.RegisterType<ColdSpellEnteredNotificationHandler>().As<IMessageHandler<ColdSpellEnteredNotification>>();
             builder.RegisterType<ColdSpellLeftNotificationHandler>().As<IMessageHandler<ColdSpellLeftNotification>>();
-            builder.RegisterType<ColdSpellEnteredNotificationSubscription>().As<ITopicSubscription>();
-            builder.RegisterType<ColdSpellLeftNotificationSubscription>().As<ITopicSubscription>();
-            builder.RegisterType<TemperatureTelemetrySubscription>().As<ITopicSubscription>();
-            builder.RegisterType<LuxTelemetrySubscription>().As<ITopicSubscription>();
+            builder.RegisterType<NotificationSubscription<ColdSpellEnteredNotification>>().As<ITopicSubscription>();
+            builder.RegisterType<NotificationSubscription<ColdSpellLeftNotification>>().As<ITopicSubscription>();
+            builder.RegisterType<TelemetrySubscription<TemperatureTelemetry>>().As<ITopicSubscription>();
+            builder.RegisterType<TelemetrySubscription<LuxTelemetry>>().As<ITopicSubscription>();
+#if !DEBUG
             builder.RegisterType<TwilioSmsClient>().As<ISmsClient>();
+#else
+            builder.RegisterType<TraceSmsClient>().As<ISmsClient>();
+#endif
             builder.RegisterType<TelemetryService>().As<ITelemetryService>();
             builder.RegisterType<NotificationService>().As<INotificationService>();
             builder.RegisterType<ElasticIndexClient>().As<IIndexService>();

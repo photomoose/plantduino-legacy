@@ -1,36 +1,39 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Rumr.Plantduino.Domain;
 using Rumr.Plantduino.Domain.Messages.Telemetry;
 using Rumr.Plantduino.Domain.Services;
 
 namespace Rumr.Plantduino.Application.Services.Subscriptions
 {
-    public class TemperatureTelemetrySubscription : ITopicSubscription
+    public class TelemetrySubscription<T> : ITopicSubscription where T : TelemetryMessage
     {
         private readonly ITelemetryService _telemetryService;
-        private readonly IEnumerable<IMessageHandler<TemperatureTelemetry>> _handlers;
+        private readonly IEnumerable<IMessageHandler<T>> _handlers;
+        private readonly IIndexService _indexService;
 
-        public TemperatureTelemetrySubscription(ITelemetryService telemetryService, IEnumerable<IMessageHandler<TemperatureTelemetry>> handlers)
+        public TelemetrySubscription(ITelemetryService telemetryService, IEnumerable<IMessageHandler<T>> handlers, IIndexService indexService)
         {
             _telemetryService = telemetryService;
             _handlers = handlers;
+            _indexService = indexService;
         }
 
         public async Task InitializeAsync()
         {
-            await _telemetryService.InitializeAsync<TemperatureTelemetry>();
+            await _telemetryService.InitializeAsync<T>();
         }
 
         public async Task ListenAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
-                var telemetry = await _telemetryService.ReceiveAsync<TemperatureTelemetry>();
+                var telemetry = await _telemetryService.ReceiveAsync<T>();
 
                 if (telemetry != null)
                 {
+                    await _indexService.IndexMessageAsync(telemetry);
+
                     Parallel.ForEach(_handlers, async h => await h.HandleAsync(telemetry));
 
                     await telemetry.CompleteAsync();

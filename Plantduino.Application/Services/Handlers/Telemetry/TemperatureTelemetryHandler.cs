@@ -1,12 +1,10 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Rumr.Plantduino.Domain;
 using Rumr.Plantduino.Domain.Configuration;
 using Rumr.Plantduino.Domain.Messages.Notifications;
 using Rumr.Plantduino.Domain.Messages.Telemetry;
 using Rumr.Plantduino.Domain.Services;
-using Rumr.Plantduino.Domain.Sms;
 
 namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
 {
@@ -14,15 +12,13 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
     {
         private readonly IConfiguration _configuration;
         private readonly INotificationService _notificationService;
-        private readonly IIndexService _indexService;
         private bool _isColdSpell;
         private DateTime _coldSpellStartUtc;
 
-        public TemperatureTelemetryHandler(IConfiguration configuration, INotificationService notificationService, IIndexService indexService)
+        public TemperatureTelemetryHandler(IConfiguration configuration, INotificationService notificationService)
         {
             _configuration = configuration;
             _notificationService = notificationService;
-            _indexService = indexService;
         }
 
         public async Task HandleAsync(TemperatureTelemetry message)
@@ -34,7 +30,7 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
                 Trace.TraceInformation("{0}: Entering cold spell.", message.DeviceId);
 
                 _isColdSpell = true;
-                _coldSpellStartUtc = message.EnqueuedTimeUtc;
+                _coldSpellStartUtc = message.Timestamp;
 
                 await _notificationService.RaiseAsync(
                     new ColdSpellEnteredNotification(
@@ -45,7 +41,7 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
             }
             else if (message.Temperature > _configuration.ColdSpellTemp && _isColdSpell)
             {
-                var coldSpellEndUtc = message.EnqueuedTimeUtc;
+                var coldSpellEndUtc = message.Timestamp;
                 var coldSpellDuration = coldSpellEndUtc - _coldSpellStartUtc;
 
                 Trace.TraceInformation("{0}: Leaving cold spell. (Duration: {1}.)", message.DeviceId, coldSpellDuration);
@@ -59,10 +55,6 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
                         _configuration.ColdSpellTemp, 0, _coldSpellStartUtc,
                         coldSpellEndUtc));
             }
-
-            var index = new TemperatureTelemetryIndex(message.Temperature, message.DeviceId, message.EnqueuedTimeUtc);
-
-            await _indexService.IndexAsync(index);
         }
     }
 }

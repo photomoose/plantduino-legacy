@@ -58,8 +58,6 @@
     <Compile Include="Services\INotificationService.cs" />
     <Compile Include="Services\ITopicSubscription.cs" />
     <Compile Include="Sms\ISmsClient.cs" />
-    <Compile Include="TelemetryIndex.cs" />
-    <Compile Include="TemperatureTelemetryIndex.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

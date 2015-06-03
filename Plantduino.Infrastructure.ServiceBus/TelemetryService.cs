@@ -28,7 +28,7 @@ namespace Rumr.Plantduino.Infrastructure.ServiceBus
         {
             var brokeredMsg = await _topicSubscriber.ReceiveFromTopicAsync(TopicNames.Telemetry, typeof(T).Name);
 
-            return brokeredMsg != null ? MessageMapper.Map<T>(brokeredMsg) : null;
+            return brokeredMsg == null ? null : MessageMapper.Map<T>(brokeredMsg);
         }
     }
 }

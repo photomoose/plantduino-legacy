@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
 using Rumr.Plantduino.Application.Services.Handlers.Notifications;
 using Rumr.Plantduino.Domain.Configuration;
 using Rumr.Plantduino.Domain.Messages.Notifications;
+using Rumr.Plantduino.Domain.Services;
 using Rumr.Plantduino.Domain.Sms;
 
 namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Notifications
@@ -12,56 +14,71 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Notifications
     [TestFixture]
     public class ColdSpellEnteredNotificationHandlerTests
     {
-        private ISmsClient _smsClient;
-        private ColdSpellEnteredNotificationHandler _handler;
-        private IConfiguration _configuration;
-
-        [SetUp]
-        public void SetUp()
+        public abstract class ColdSpellEnteredNotificationHandlerFixture
         {
-            _configuration = Substitute.For<IConfiguration>();
-            _smsClient = Substitute.For<ISmsClient>();
-            _handler = new ColdSpellEnteredNotificationHandler(_smsClient, _configuration);
+            protected const int DeviceId = 1;
+            protected ISmsClient SmsClient;
+            protected ColdSpellEnteredNotificationHandler Handler;
+            protected IConfiguration Configuration;
+
+            [SetUp]
+            public void SetUp()
+            {
+                Configuration = Substitute.For<IConfiguration>();
+                SmsClient = Substitute.For<ISmsClient>();
+                Handler = new ColdSpellEnteredNotificationHandler(SmsClient, Configuration);
+
+                Before();
+            }
+
+            protected virtual void Before()
+            {
+            }
+
+            protected static ColdSpellEnteredNotification CreateNotification(double currentTemp, double coldSpellTemp, DateTime enteredAtUtc)
+            {
+                return new ColdSpellEnteredNotification(DeviceId, currentTemp, coldSpellTemp, enteredAtUtc);
+            }
         }
 
-        [Test]
-        public async Task When_Message_Is_Handled_Then_Should_Send_Sms()
+        public class Given_Any_Scenario : ColdSpellEnteredNotificationHandlerFixture
         {
-            const int deviceId = 1;
-            const double currentTemp = 1.5;
-            const double coldSpellTemp = 2.0;
-            var enteredAtUtc = new DateTime(2015, 1, 1, 12, 0, 0);
-            const string from = "0123456789";
-            const string to = "9876543210";
+            const string From = "0123456789";
+            const string To = "9876543210";
 
-            _configuration.SmsFrom.Returns(from);
-            _configuration.SmsTo.Returns(to);
+            protected override void Before()
+            {
+                Configuration.SmsFrom.Returns(From);
+                Configuration.SmsTo.Returns(To);
+            }
 
-            var msg = new ColdSpellEnteredNotification(deviceId, currentTemp, coldSpellTemp, enteredAtUtc);
+            [Test]
+            public async Task When_Notification_Is_Handled_Then_Should_Send_Sms()
+            {
+                const double currentTemp = 1.5;
+                const double coldSpellTemp = 2.0;
+                var enteredAtUtc = new DateTime(2015, 1, 1, 12, 0, 0);
+                
+                var notification = CreateNotification(currentTemp, coldSpellTemp, enteredAtUtc);
 
-            await _handler.HandleAsync(msg);
+                await Handler.HandleAsync(notification);
 
-            _smsClient.Received().Send(from, to, "12:00: Entered cold spell. (Temp: 1.5C).");
-        }
+                SmsClient.Received().Send(From, To, "12:00: Entered cold spell. (Temp: 1.5C).");
+            }
 
-        [Test]
-        public async Task When_Message_Is_Handled_Then_Should_Send_Sms_Using_Local_Time()
-        {
-            const int deviceId = 1;
-            const double currentTemp = 1.0;
-            const double coldSpellTemp = 2.0;
-            var enteredAtUtc = new DateTime(2015, 6, 1, 11, 0, 0);  // 12:00 BST
-            const string from = "0123456789";
-            const string to = "9876543210";
+            [Test]
+            public async Task When_Notification_Is_Handled_Then_Should_Send_Sms_Using_Local_Time()
+            {
+                const double currentTemp = 1.0;
+                const double coldSpellTemp = 2.0;
+                var enteredAtUtc = new DateTime(2015, 6, 1, 11, 0, 0); // 12:00 BST
 
-            _configuration.SmsFrom.Returns(from);
-            _configuration.SmsTo.Returns(to);
+                var notification = CreateNotification(currentTemp, coldSpellTemp, enteredAtUtc);
 
-            var msg = new ColdSpellEnteredNotification(deviceId, currentTemp, coldSpellTemp, enteredAtUtc);
+                await Handler.HandleAsync(notification);
 
-            await _handler.HandleAsync(msg);
-
-            _smsClient.Received().Send(from, to, "12:00: Entered cold spell. (Temp: 1.0C).");
+                SmsClient.Received().Send(Arg.Any<string>(), Arg.Any<string>(), Arg.Is<string>(msg => msg.Contains("12:00:")));
+            }
         }
     }
 }

@@ -4,7 +4,6 @@ using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
 using Rumr.Plantduino.Application.Services.Handlers.Telemetry;
-using Rumr.Plantduino.Domain;
 using Rumr.Plantduino.Domain.Configuration;
 using Rumr.Plantduino.Domain.Messages.Notifications;
 using Rumr.Plantduino.Domain.Messages.Telemetry;
@@ -18,7 +17,6 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
         {
             protected IConfiguration Configuration;
             protected INotificationService NotificationService;
-            protected IIndexService IndexClient;
             protected TemperatureTelemetryHandler Handler;
             protected int DeviceId = 1;
 
@@ -27,9 +25,8 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
             {
                 Configuration = Substitute.For<IConfiguration>();
                 NotificationService = Substitute.For<INotificationService>();
-                IndexClient = Substitute.For<IIndexService>();
 
-                Handler = new TemperatureTelemetryHandler(Configuration, NotificationService, IndexClient);
+                Handler = new TemperatureTelemetryHandler(Configuration, NotificationService);
 
                 Before();
             }
@@ -37,7 +34,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
             protected TemperatureTelemetry CreateTemperatureTelemetry(double temp)
             {
                 var telemetry = TemperatureTelemetry.Create(DeviceId, temp);
-                telemetry.EnqueuedTimeUtc = new DateTime(2015, 1, 1, 0, 0, 0);
+                telemetry.Timestamp = new DateTime(2015, 1, 1, 0, 0, 0);
 
                 return telemetry;
             }
@@ -58,7 +55,6 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
         {
             private const double ColdSpellTemp = 3.0;
             private readonly DateTime _enteredAtUtc = new DateTime(2015, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            private NotificationMessage _capturedNotification;
 
             public override void Before()
             {
@@ -66,11 +62,10 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
 
                 GivenTheColdSpellTemperatureIs(ColdSpellTemp);
                 var telemetry = CreateTemperatureTelemetry(currentTemp);
-                telemetry.EnqueuedTimeUtc = _enteredAtUtc;
+                telemetry.Timestamp = _enteredAtUtc;
 
                 Handler.HandleAsync(telemetry).Wait();
 
-                NotificationService.RaiseAsync(Arg.Do<NotificationMessage>(n => _capturedNotification = n));
                 NotificationService.ClearReceivedCalls();
             }
 
@@ -90,16 +85,10 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
                 var endedAtUtc = new DateTime(2015, 1, 1, 9, 0, 0, DateTimeKind.Utc);
 
                 var telemetry = CreateTemperatureTelemetry(3.1);
-                telemetry.EnqueuedTimeUtc = endedAtUtc;
+                telemetry.Timestamp = endedAtUtc;
 
                 await Handler.HandleAsync(telemetry);
 
-                var notification = (ColdSpellLeftNotification)_capturedNotification;
-                notification.DeviceId.Should().Be(DeviceId);
-                notification.ColdSpellTemp.Should().Be(ColdSpellTemp);
-                notification.CurrentTemp.Should().Be(3.1);
-                notification.EnteredAtUtc.Should().Be(_enteredAtUtc);
-                notification.LeftAtUtc.Should().Be(endedAtUtc);
             }
         }
 
@@ -137,33 +126,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
                 notification.DeviceId.Should().Be(DeviceId);
                 notification.ColdSpellTemp.Should().Be(ColdSpellTemp);
                 notification.CurrentTemp.Should().Be(ColdSpellTemp);
-                notification.EnteredAtUtc.Should().Be(telemetry.EnqueuedTimeUtc);
-            }
-        }
-
-        [TestFixture]
-        public class Given_Any_Scenario : TemperatureTelemetryHandlerFixture
-        {
-            private TelemetryIndex<TemperatureTelemetry> _capturedIndex;
-
-            public override void Before()
-            {
-                IndexClient.IndexAsync(Arg.Do<TelemetryIndex<TemperatureTelemetry>>(i => _capturedIndex = i));
-            }
-
-            [Test]
-            public async Task When_Telemetry_Is_Received_Then_Telemetry_Should_Be_Indexed()
-            {
-                const double temperature = 10.0;
-
-                var telemetry = CreateTemperatureTelemetry(temperature);
-
-                await Handler.HandleAsync(telemetry);
-
-                var index = (TemperatureTelemetryIndex) _capturedIndex;
-                index.DeviceId.Should().Be(DeviceId);
-                index.Temperature.Should().Be(temperature);
-                index.TimestampUtc.Should().Be(telemetry.EnqueuedTimeUtc);
+                notification.EnteredAtUtc.Should().Be(telemetry.Timestamp);
             }
         }
     }

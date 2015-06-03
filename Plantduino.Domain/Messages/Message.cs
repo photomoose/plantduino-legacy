@@ -12,11 +12,9 @@ namespace Rumr.Plantduino.Domain.Messages
             get { return GetType().Name; }
         }
 
-        [JsonIgnore]
-        public int DeviceId { get; set; }
+        public DateTime Timestamp { get; set; }
 
-        [JsonIgnore]
-        public DateTime EnqueuedTimeUtc { get; set; }
+        public int DeviceId { get; set; }
 
         [JsonIgnore]
         public Func<Task> CompletionTarget { get; set; }

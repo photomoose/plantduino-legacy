@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Rumr.Plantduino.Domain.Messages.Telemetry;
+using Rumr.Plantduino.Domain.Messages;
 
 namespace Rumr.Plantduino.Domain.Services
 {
     public interface IIndexService
     {
-        Task IndexAsync<T>(TelemetryIndex<T> message) where T : TelemetryMessage;
+        Task IndexMessageAsync<T>(T message) where T : Message;
     }
 }
