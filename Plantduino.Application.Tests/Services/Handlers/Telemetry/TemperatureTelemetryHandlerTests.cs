@@ -4,12 +4,11 @@ using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
 using Rumr.Plantduino.Application.Services.Handlers.Telemetry;
-using Rumr.Plantduino.Application.Services.Subscriptions;
+using Rumr.Plantduino.Domain;
 using Rumr.Plantduino.Domain.Configuration;
 using Rumr.Plantduino.Domain.Messages.Notifications;
 using Rumr.Plantduino.Domain.Messages.Telemetry;
 using Rumr.Plantduino.Domain.Services;
-using Rumr.Plantduino.Domain.Sms;
 
 namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
 {
@@ -139,6 +138,32 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
                 notification.ColdSpellTemp.Should().Be(ColdSpellTemp);
                 notification.CurrentTemp.Should().Be(ColdSpellTemp);
                 notification.EnteredAtUtc.Should().Be(telemetry.EnqueuedTimeUtc);
+            }
+        }
+
+        [TestFixture]
+        public class Given_Any_Scenario : TemperatureTelemetryHandlerFixture
+        {
+            private TelemetryIndex<TemperatureTelemetry> _capturedIndex;
+
+            public override void Before()
+            {
+                IndexClient.IndexAsync(Arg.Do<TelemetryIndex<TemperatureTelemetry>>(i => _capturedIndex = i));
+            }
+
+            [Test]
+            public async Task When_Telemetry_Is_Received_Then_Telemetry_Should_Be_Indexed()
+            {
+                const double temperature = 10.0;
+
+                var telemetry = CreateTemperatureTelemetry(temperature);
+
+                await Handler.HandleAsync(telemetry);
+
+                var index = (TemperatureTelemetryIndex) _capturedIndex;
+                index.DeviceId.Should().Be(DeviceId);
+                index.Temperature.Should().Be(temperature);
+                index.TimestampUtc.Should().Be(telemetry.EnqueuedTimeUtc);
             }
         }
     }
