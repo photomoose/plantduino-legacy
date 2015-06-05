@@ -16,17 +16,17 @@ namespace Rumr.Plantduino.Infrastructure.Elastic
         {
             var node = new Uri("http://plantduino-kibana.cloudapp.net:9200");
             var settings = new ConnectionSettings(node);
-//#if DEBUG
-//            settings.MapDefaultTypeIndices(d => d.Add(typeof(TemperatureTelemetry), "dev-telemetry"));
-//            settings.MapDefaultTypeIndices(d => d.Add(typeof(LuxTelemetry), "dev-telemetry"));
-//            settings.MapDefaultTypeIndices(d => d.Add(typeof(ColdSpellEnteredNotification), "dev-notification"));
-//            settings.MapDefaultTypeIndices(d => d.Add(typeof(ColdSpellLeftNotification), "dev-notification"));
-//#else
+#if DEBUG
+            settings.MapDefaultTypeIndices(d => d.Add(typeof(TemperatureTelemetry), "dev-telemetry"));
+            settings.MapDefaultTypeIndices(d => d.Add(typeof(LuxTelemetry), "dev-telemetry"));
+            settings.MapDefaultTypeIndices(d => d.Add(typeof(ColdSpellEnteredNotification), "dev-notification"));
+            settings.MapDefaultTypeIndices(d => d.Add(typeof(ColdSpellLeftNotification), "dev-notification"));
+#else
             settings.MapDefaultTypeIndices(d => d.Add(typeof(TemperatureTelemetry), "telemetry"));
             settings.MapDefaultTypeIndices(d => d.Add(typeof(LuxTelemetry), "telemetry"));
             settings.MapDefaultTypeIndices(d => d.Add(typeof(ColdSpellEnteredNotification), "notification"));
             settings.MapDefaultTypeIndices(d => d.Add(typeof(ColdSpellLeftNotification), "notification"));
-//#endif
+#endif
             _client = new ElasticClient(settings);
         }
 

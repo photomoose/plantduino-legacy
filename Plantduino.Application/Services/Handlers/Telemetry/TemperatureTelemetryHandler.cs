@@ -13,7 +13,7 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
         private readonly IConfiguration _configuration;
         private readonly INotificationService _notificationService;
         private bool _isColdSpell;
-        private DateTime _coldSpellStartUtc;
+        private DateTime _coldSpellEnteredAt;
 
         public TemperatureTelemetryHandler(IConfiguration configuration, INotificationService notificationService)
         {
@@ -30,19 +30,19 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
                 Trace.TraceInformation("{0}: INFO: Entering cold spell.", message.DeviceId);
 
                 _isColdSpell = true;
-                _coldSpellStartUtc = message.Timestamp;
+                _coldSpellEnteredAt = message.Timestamp;
 
                 await _notificationService.RaiseAsync(
                     new ColdSpellEnteredNotification(
                         message.DeviceId,
                         message.Temperature,
                         _configuration.ColdSpellTemp,
-                        _coldSpellStartUtc));
+                        _coldSpellEnteredAt));
             }
             else if (message.Temperature > _configuration.ColdSpellTemp && _isColdSpell)
             {
-                var coldSpellEndUtc = message.Timestamp;
-                var coldSpellDuration = coldSpellEndUtc - _coldSpellStartUtc;
+                var coldSpellLeftAt = message.Timestamp;
+                var coldSpellDuration = coldSpellLeftAt - _coldSpellEnteredAt;
 
                 Trace.TraceInformation("{0}: INFO: Leaving cold spell. {{Duration: {1}}}", message.DeviceId, coldSpellDuration);
 
@@ -52,8 +52,8 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
                     new ColdSpellLeftNotification(
                         message.DeviceId,
                         message.Temperature,
-                        _configuration.ColdSpellTemp, 0, _coldSpellStartUtc,
-                        coldSpellEndUtc));
+                        _configuration.ColdSpellTemp, 0, _coldSpellEnteredAt,
+                        coldSpellLeftAt));
             }
         }
     }

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Rumr.Plantduino.Domain.Messages.Notifications;
-using Rumr.Plantduino.Domain.Messages.Telemetry;
 using Rumr.Plantduino.Domain.Services;
 
 namespace Rumr.Plantduino.Application.Services.Subscriptions
