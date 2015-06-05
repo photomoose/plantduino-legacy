@@ -4,5 +4,6 @@
     {
         string AccountSid { get; }
         string AuthToken { get; }
+        bool IsSmsEnabled { get; }
     }
 }

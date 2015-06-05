@@ -4,6 +4,7 @@ using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
 using Rumr.Plantduino.Application.Services.Handlers.Notifications;
+using Rumr.Plantduino.Common;
 using Rumr.Plantduino.Domain.Configuration;
 using Rumr.Plantduino.Domain.Messages.Notifications;
 using Rumr.Plantduino.Domain.Services;
@@ -26,7 +27,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Notifications
             {
                 Configuration = Substitute.For<IConfiguration>();
                 SmsClient = Substitute.For<ISmsClient>();
-                Handler = new ColdSpellEnteredNotificationHandler(SmsClient, Configuration);
+                Handler = new ColdSpellEnteredNotificationHandler(SmsClient, Configuration, new DateTimeProvider());
 
                 Before();
             }
@@ -71,7 +72,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Notifications
             {
                 const double currentTemp = 1.0;
                 const double coldSpellTemp = 2.0;
-                var enteredAtUtc = new DateTime(2015, 6, 1, 11, 0, 0); // 12:00 BST
+                var enteredAtUtc = new DateTime(2015, 6, 1, 11, 0, 0, DateTimeKind.Utc); // 12:00 BST
 
                 var notification = CreateNotification(currentTemp, coldSpellTemp, enteredAtUtc);
 

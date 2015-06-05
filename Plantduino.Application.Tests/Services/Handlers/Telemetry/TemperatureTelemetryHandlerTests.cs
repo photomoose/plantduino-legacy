@@ -126,7 +126,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
                 notification.DeviceId.Should().Be(DeviceId);
                 notification.ColdSpellTemp.Should().Be(ColdSpellTemp);
                 notification.CurrentTemp.Should().Be(ColdSpellTemp);
-                notification.EnteredAtUtc.Should().Be(telemetry.Timestamp);
+                notification.EnteredAt.Should().Be(telemetry.Timestamp);
             }
         }
     }

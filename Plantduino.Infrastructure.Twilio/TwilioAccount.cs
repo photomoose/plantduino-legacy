@@ -13,5 +13,10 @@ namespace Plantduino.Infrastructure.Twilio
         {
             get { return CloudConfigurationManager.GetSetting("TwilioAuthToken"); }
         }
+
+        public bool IsSmsEnabled
+        {
+            get { return bool.Parse(CloudConfigurationManager.GetSetting("SmsEnabled")); }
+        }
     }
 }

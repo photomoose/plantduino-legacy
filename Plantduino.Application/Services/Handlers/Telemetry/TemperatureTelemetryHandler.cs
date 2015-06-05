@@ -23,11 +23,11 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
 
         public async Task HandleAsync(TemperatureTelemetry message)
         {
-            Trace.TraceInformation("Received {0} message. (Temperature: {1}).", message.GetType().Name, message.Temperature);
+            Trace.TraceInformation("{0}: HANDLE: {1} {{Temperature: {2}}}.", message.DeviceId, message.GetType().Name, message.Temperature);
 
             if (message.Temperature <= _configuration.ColdSpellTemp && !_isColdSpell)
             {
-                Trace.TraceInformation("{0}: Entering cold spell.", message.DeviceId);
+                Trace.TraceInformation("{0}: INFO: Entering cold spell.", message.DeviceId);
 
                 _isColdSpell = true;
                 _coldSpellStartUtc = message.Timestamp;
@@ -44,7 +44,7 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
                 var coldSpellEndUtc = message.Timestamp;
                 var coldSpellDuration = coldSpellEndUtc - _coldSpellStartUtc;
 
-                Trace.TraceInformation("{0}: Leaving cold spell. (Duration: {1}.)", message.DeviceId, coldSpellDuration);
+                Trace.TraceInformation("{0}: INFO: Leaving cold spell. {{Duration: {1}}}", message.DeviceId, coldSpellDuration);
 
                 _isColdSpell = false;
 

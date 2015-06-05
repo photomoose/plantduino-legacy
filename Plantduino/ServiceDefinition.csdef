@@ -9,6 +9,7 @@
       <Setting name="ColdSpellTemp" />
       <Setting name="SmsFrom" />
       <Setting name="SmsTo" />
+      <Setting name="SmsEnabled" />
     </ConfigurationSettings>
   </WorkerRole>
 </ServiceDefinition>

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Rumr.Plantduino.Domain.Messages.Telemetry;
@@ -28,15 +30,25 @@ namespace Rumr.Plantduino.Application.Services.Subscriptions
         {
             while (!token.IsCancellationRequested)
             {
-                var telemetry = await _telemetryService.ReceiveAsync<T>();
-
-                if (telemetry != null)
+                try
                 {
-                    await _indexService.IndexMessageAsync(telemetry);
+                    var telemetry = await _telemetryService.ReceiveAsync<T>();
 
-                    Parallel.ForEach(_handlers, async h => await h.HandleAsync(telemetry));
+                    if (telemetry != null)
+                    {
+                        Trace.TraceInformation("{0}: RECEIVED: {1} {{Timestamp: {2}}}", telemetry.DeviceId,
+                            telemetry.MessageType, telemetry.Timestamp);
 
-                    await telemetry.CompleteAsync();
+                        await _indexService.IndexMessageAsync(telemetry);
+
+                        Parallel.ForEach(_handlers, async h => await h.HandleAsync(telemetry));
+
+                        await telemetry.CompleteAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceError(ex.ToString());
                 }
             }
         }

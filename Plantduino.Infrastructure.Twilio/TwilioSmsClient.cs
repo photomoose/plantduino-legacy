@@ -14,9 +14,12 @@ namespace Plantduino.Infrastructure.Twilio
 
         public void Send(string from, string to, string text)
         {
-            var client = new TwilioRestClient(_twilioAccount.AccountSid, _twilioAccount.AuthToken);
+            if (_twilioAccount.IsSmsEnabled)
+            {
+                var client = new TwilioRestClient(_twilioAccount.AccountSid, _twilioAccount.AuthToken);
 
-            client.SendMessage(from, to, text);
+                client.SendMessage(from, to, text);
+            }
         }
     }
 }
