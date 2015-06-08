@@ -14,6 +14,7 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
         private readonly INotificationService _notificationService;
         private bool _isColdSpell;
         private DateTime _coldSpellEnteredAt;
+        private double _minTemp;
 
         public TemperatureTelemetryHandler(IConfiguration configuration, INotificationService notificationService)
         {
@@ -25,12 +26,18 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
         {
             Trace.TraceInformation("{0}: HANDLE: {1} {{Temperature: {2}}}.", message.DeviceId, message.GetType().Name, message.Temperature);
 
+            if (message.Temperature < _minTemp)
+            {
+                _minTemp = message.Temperature;
+            }
+
             if (message.Temperature <= _configuration.ColdSpellTemp && !_isColdSpell)
             {
                 Trace.TraceInformation("{0}: INFO: Entering cold spell.", message.DeviceId);
 
                 _isColdSpell = true;
                 _coldSpellEnteredAt = message.Timestamp;
+                _minTemp = message.Temperature;
 
                 await _notificationService.RaiseAsync(
                     new ColdSpellEnteredNotification(
@@ -52,7 +59,9 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
                     new ColdSpellLeftNotification(
                         message.DeviceId,
                         message.Temperature,
-                        _configuration.ColdSpellTemp, 0, _coldSpellEnteredAt,
+                        _configuration.ColdSpellTemp, 
+                        _minTemp, 
+                        _coldSpellEnteredAt,
                         coldSpellLeftAt));
             }
         }
