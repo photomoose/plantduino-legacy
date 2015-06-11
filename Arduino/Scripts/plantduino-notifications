@@ -1,0 +1,16 @@
+#!/bin/sh /etc/rc.common
+
+START=30
+
+start() {
+        echo "Starting plantduino-notifications"
+        python /root/notifications.py &
+        echo "Started plantduino-notifications"
+}
+
+stop() {
+        pid=$(ps | grep '[p]ython /root/notifications.py' | awk '{ print $1 }')
+        echo "Stopping plantduino-notifications"
+        kill $pid
+        echo "Stopped plantduino-notifications"
+}

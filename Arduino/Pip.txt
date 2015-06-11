@@ -1,0 +1,5 @@
+opkg update
+opkg install distribute
+opkg install python-openssl
+opkg install python-bzip2
+easy_install pip
