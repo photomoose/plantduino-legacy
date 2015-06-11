@@ -55,6 +55,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
         {
             private const double ColdSpellTemp = 3.0;
             private readonly DateTime _enteredAtUtc = new DateTime(2015, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            private NotificationMessage _capturedNotification;
 
             public override void Before()
             {
@@ -67,6 +68,8 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
                 Handler.HandleAsync(telemetry).Wait();
 
                 NotificationService.ClearReceivedCalls();
+
+                NotificationService.RaiseAsync(Arg.Do<NotificationMessage>(n => _capturedNotification = n));
             }
 
             [Test]
@@ -89,6 +92,24 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
 
                 await Handler.HandleAsync(telemetry);
 
+                var notification = (ColdSpellLeftNotification) _capturedNotification;
+                notification.DeviceId.Should().Be(DeviceId);
+                notification.ColdSpellTemp.Should().Be(ColdSpellTemp);
+                notification.CurrentTemp.Should().Be(3.1);
+                notification.EnteredAt.Should().Be(_enteredAtUtc);
+                notification.LeftAt.Should().Be(endedAtUtc);
+            }
+
+            [Test]
+            public async Task When_Cold_Spell_Ends_Then_Should_Raise_Cold_Spell_Ended_Notification_With_Min_Temp()
+            {
+                var endedAtUtc = new DateTime(2015, 1, 1, 9, 0, 0, DateTimeKind.Utc);
+
+                await Handler.HandleAsync(CreateTemperatureTelemetry(-4.2));
+                await Handler.HandleAsync(CreateTemperatureTelemetry(3.1));
+
+                var notification = (ColdSpellLeftNotification) _capturedNotification;
+                notification.MinTemp.Should().Be(-4.2);
             }
         }
 
@@ -122,11 +143,41 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
 
                 await Handler.HandleAsync(telemetry);
 
-                var notification = (ColdSpellEnteredNotification)_capturedNotification;
+                var notification = (ColdSpellEnteredNotification) _capturedNotification;
                 notification.DeviceId.Should().Be(DeviceId);
                 notification.ColdSpellTemp.Should().Be(ColdSpellTemp);
                 notification.CurrentTemp.Should().Be(ColdSpellTemp);
-                notification.EnteredAtUtc.Should().Be(telemetry.Timestamp);
+                notification.EnteredAt.Should().Be(telemetry.Timestamp);
+            }
+        }
+
+        [TestFixture]
+        public class Given_Previous_Cold_Spells_And_Inside_Cold_Spell : TemperatureTelemetryHandlerFixture
+        {
+            private const double ColdSpellTemp = 3.0;
+            private NotificationMessage _capturedNotification;
+
+            public override void Before()
+            {
+                GivenTheColdSpellTemperatureIs(ColdSpellTemp);
+
+                Handler.HandleAsync(CreateTemperatureTelemetry(-5.0)).Wait(); // Cold Spell begin
+                Handler.HandleAsync(CreateTemperatureTelemetry(3.1)).Wait(); // Cold Spell end
+                Handler.HandleAsync(CreateTemperatureTelemetry(2.9)).Wait(); // Cold Spell begin
+
+                NotificationService.ClearReceivedCalls();
+
+                NotificationService.RaiseAsync(Arg.Do<NotificationMessage>(n => _capturedNotification = n));
+            }
+
+            [Test]
+            public async Task When_Cold_Spell_Ends_Then_Should_Raise_Cold_Spell_Ended_Notification_With_Min_Temp_Of_Recent_Cold_Spell()
+            {
+                await Handler.HandleAsync(CreateTemperatureTelemetry(-1.5));
+                await Handler.HandleAsync(CreateTemperatureTelemetry(3.1));
+
+                var notification = (ColdSpellLeftNotification) _capturedNotification;
+                notification.MinTemp.Should().Be(-1.5);
             }
         }
     }

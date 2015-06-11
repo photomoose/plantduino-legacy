@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Rumr.Plantduino.Application.Services.Handlers.Notifications;
+using Rumr.Plantduino.Common;
 using Rumr.Plantduino.Domain.Configuration;
 using Rumr.Plantduino.Domain.Messages.Notifications;
 using Rumr.Plantduino.Domain.Sms;
@@ -21,7 +22,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Notifications
         {
             _configuration = Substitute.For<IConfiguration>();
             _smsClient = Substitute.For<ISmsClient>();
-            _handler = new ColdSpellLeftNotificationHandler(_smsClient, _configuration);
+            _handler = new ColdSpellLeftNotificationHandler(_smsClient, _configuration, new DateTimeProvider());
         }
 
         [Test]

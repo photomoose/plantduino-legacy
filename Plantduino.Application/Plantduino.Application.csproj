@@ -50,6 +50,10 @@
     <Compile Include="Services\Subscriptions\TelemetrySubscription.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Plantduino.Common\Plantduino.Common.csproj">
+      <Project>{8A297846-6E24-41D3-85C1-016D7E7A6F59}</Project>
+      <Name>Plantduino.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Plantduino.Domain\Plantduino.Domain.csproj">
       <Project>{11FFCB40-8B44-47E8-9D8C-87C82756B60C}</Project>
       <Name>Plantduino.Domain</Name>

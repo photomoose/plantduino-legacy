@@ -11,6 +11,7 @@ using Rumr.Plantduino.Application;
 using Rumr.Plantduino.Application.Services.Handlers.Notifications;
 using Rumr.Plantduino.Application.Services.Handlers.Telemetry;
 using Rumr.Plantduino.Application.Services.Subscriptions;
+using Rumr.Plantduino.Common;
 using Rumr.Plantduino.Domain;
 using Rumr.Plantduino.Domain.Configuration;
 using Rumr.Plantduino.Domain.Messages.Notifications;
@@ -69,6 +70,7 @@ namespace Rumr.Plantduino.Worker
             builder.RegisterType<TelemetryService>().As<ITelemetryService>();
             builder.RegisterType<NotificationService>().As<INotificationService>();
             builder.RegisterType<ElasticIndexClient>().As<IIndexService>();
+            builder.RegisterType<DateTimeProvider>().As<IDateTimeProvider>();
 
             var container = builder.Build();
 

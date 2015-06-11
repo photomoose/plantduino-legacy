@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Rumr.Plantduino.Domain.Messages.Notifications;
-using Rumr.Plantduino.Domain.Messages.Telemetry;
 using Rumr.Plantduino.Domain.Services;
 
 namespace Rumr.Plantduino.Application.Services.Subscriptions
@@ -29,15 +30,25 @@ namespace Rumr.Plantduino.Application.Services.Subscriptions
         {
             while (!token.IsCancellationRequested)
             {
-                var notification = await _notificationService.ReceiveAsync<T>();
-
-                if (notification != null)
+                try
                 {
-                    await _indexService.IndexMessageAsync(notification);
+                    var notification = await _notificationService.ReceiveAsync<T>();
 
-                    Parallel.ForEach(_handlers, async h => await h.HandleAsync(notification));
+                    if (notification != null)
+                    {
+                        Trace.TraceInformation("{0}: RECEIVED: {1} {{Timestamp: {2}}}", notification.DeviceId,
+                            notification.MessageType, notification.Timestamp);
 
-                    await notification.CompleteAsync();
+                        await _indexService.IndexMessageAsync(notification);
+
+                        Parallel.ForEach(_handlers, async h => await h.HandleAsync(notification));
+
+                        await notification.CompleteAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceError(ex.ToString());
                 }
             }
         }

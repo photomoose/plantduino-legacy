@@ -13,7 +13,8 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
         private readonly IConfiguration _configuration;
         private readonly INotificationService _notificationService;
         private bool _isColdSpell;
-        private DateTime _coldSpellStartUtc;
+        private DateTime _coldSpellEnteredAt;
+        private double _minTemp;
 
         public TemperatureTelemetryHandler(IConfiguration configuration, INotificationService notificationService)
         {
@@ -23,28 +24,34 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
 
         public async Task HandleAsync(TemperatureTelemetry message)
         {
-            Trace.TraceInformation("Received {0} message. (Temperature: {1}).", message.GetType().Name, message.Temperature);
+            Trace.TraceInformation("{0}: HANDLE: {1} {{Temperature: {2}}}.", message.DeviceId, message.GetType().Name, message.Temperature);
+
+            if (message.Temperature < _minTemp)
+            {
+                _minTemp = message.Temperature;
+            }
 
             if (message.Temperature <= _configuration.ColdSpellTemp && !_isColdSpell)
             {
-                Trace.TraceInformation("{0}: Entering cold spell.", message.DeviceId);
+                Trace.TraceInformation("{0}: INFO: Entering cold spell.", message.DeviceId);
 
                 _isColdSpell = true;
-                _coldSpellStartUtc = message.Timestamp;
+                _coldSpellEnteredAt = message.Timestamp;
+                _minTemp = message.Temperature;
 
                 await _notificationService.RaiseAsync(
                     new ColdSpellEnteredNotification(
                         message.DeviceId,
                         message.Temperature,
                         _configuration.ColdSpellTemp,
-                        _coldSpellStartUtc));
+                        _coldSpellEnteredAt));
             }
             else if (message.Temperature > _configuration.ColdSpellTemp && _isColdSpell)
             {
-                var coldSpellEndUtc = message.Timestamp;
-                var coldSpellDuration = coldSpellEndUtc - _coldSpellStartUtc;
+                var coldSpellLeftAt = message.Timestamp;
+                var coldSpellDuration = coldSpellLeftAt - _coldSpellEnteredAt;
 
-                Trace.TraceInformation("{0}: Leaving cold spell. (Duration: {1}.)", message.DeviceId, coldSpellDuration);
+                Trace.TraceInformation("{0}: INFO: Leaving cold spell. {{Duration: {1}}}", message.DeviceId, coldSpellDuration);
 
                 _isColdSpell = false;
 
@@ -52,8 +59,10 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
                     new ColdSpellLeftNotification(
                         message.DeviceId,
                         message.Temperature,
-                        _configuration.ColdSpellTemp, 0, _coldSpellStartUtc,
-                        coldSpellEndUtc));
+                        _configuration.ColdSpellTemp, 
+                        _minTemp, 
+                        _coldSpellEnteredAt,
+                        coldSpellLeftAt));
             }
         }
     }
