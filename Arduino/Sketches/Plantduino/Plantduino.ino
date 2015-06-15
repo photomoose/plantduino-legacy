@@ -4,14 +4,17 @@
 #include <OneWire.h>
 
 OneWire ds(2);
-byte addr[8] = { 0x28, 0xFF, 0x97, 0x75, 0x70, 0x14, 0x04, 0xDE };
+byte sensor1[8] = { 0x28, 0xFF, 0x97, 0x75, 0x70, 0x14, 0x04, 0xDE };
+byte sensor2[8] = { 0x28, 0xFF, 0x92, 0x59, 0x70, 0x14, 0x04, 0x6E };
+
 const float VIN = 4.54;
 const int TEMP_PIN = A1;
 const int LED_PIN = 13;
 const int BLUE_LED_PIN = 3;
-Process tempProcess;
+
 AnalogSmooth as = AnalogSmooth(100);
-float previousTemp = 0;
+float previousTemp1 = 0;
+float previousTemp2 = 0;
 unsigned long previousMillis = 0;
 unsigned long interval = 10000;// * 60 * 5;
 
@@ -28,20 +31,32 @@ void setup() {
 void loop() {
   String message;
   float currentTemp = GetCurrentTemperature();
-  float dsTemp = GetDSTemp();
+  float dsTemp1 = GetDSTemp(sensor1);
+  float dsTemp2 = GetDSTemp(sensor2);
   unsigned long currentMillis = millis();
   
   Console.println();
   Console.print("Analog Temperature: ");
   Console.println(currentTemp);
-  Console.print("Digital Temperature: ");
-  Console.println(dsTemp, 1);
+  Console.print("Digital Temperature 1: ");
+  Console.println(dsTemp1, 1);
+  Console.print("Digital Temperature 2: ");
+  Console.println(dsTemp2, 1);
   
-  if (dsTemp != previousTemp || (currentMillis - previousMillis) > 600000) {
-    SendTemperatureTelemetry(dsTemp);      
-    previousTemp = dsTemp;
-    previousMillis = currentMillis;
+  if (dsTemp1 != previousTemp1 || (currentMillis - previousMillis) > 600000) {
+    SendTemperatureTelemetry(1, dsTemp1);      
+    previousTemp1 = dsTemp1;
     FlashLed();
+  }
+  
+  if (dsTemp2 != previousTemp2 || (currentMillis - previousMillis) > 600000) {
+    SendTemperatureTelemetry(2, dsTemp2);      
+    previousTemp2 = dsTemp2;
+    FlashLed();
+  }  
+  
+  if ((currentMillis - previousMillis) > 600000) {
+    previousMillis = currentMillis;
   }
   
   while (Mailbox.messageAvailable())
@@ -60,14 +75,16 @@ void loop() {
   delay(500);
 }
 
-void SendTemperatureTelemetry(double temp) {
+void SendTemperatureTelemetry(int deviceId, double temp) {
     Console.print("Sending temperature telemetry: ");
     Console.println(temp);
    
+    Process tempProcess;
     tempProcess.begin("python");
     tempProcess.addParameter("/root/temperature.py");
+    tempProcess.addParameter(String(deviceId));
     tempProcess.addParameter(String(temp));
-    tempProcess.runAsynchronously();
+    tempProcess.run();
 }
 
 float GetCurrentTemperature() {
@@ -83,7 +100,7 @@ void FlashLed() {
   digitalWrite(LED_PIN, LOW);
 }
 
-double GetDSTemp() {
+double GetDSTemp(byte *addr) {
   double x;
   byte i;
   byte data[9];
@@ -94,7 +111,7 @@ double GetDSTemp() {
   ds.select(addr);
   ds.write(0x44, 1);
   
-  delay(500);  
+  delay(1000);  
   
   ds.reset();
   ds.select(addr);

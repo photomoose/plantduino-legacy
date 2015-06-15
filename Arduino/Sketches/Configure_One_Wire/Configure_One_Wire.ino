@@ -2,7 +2,7 @@
 #include <OneWire.h>
 
 OneWire ds(2);
-byte addr[8] = { 0x28, 0xFF, 0x97, 0x75, 0x70, 0x14, 0x04, 0xDE };
+byte addr[8] = { 0x28, 0xFF, 0x92, 0x59, 0x70, 0x14, 0x04, 0x6E };
 
 void setup() {
   Bridge.begin();
@@ -14,7 +14,7 @@ void setup() {
   
   Console.println("Connected.");
 
-  //configure();
+  configure();
 }
 
 void loop() {
