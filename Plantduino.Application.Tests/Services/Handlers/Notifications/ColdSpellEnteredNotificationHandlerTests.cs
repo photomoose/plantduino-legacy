@@ -17,7 +17,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Notifications
     {
         public abstract class ColdSpellEnteredNotificationHandlerFixture
         {
-            protected const int DeviceId = 1;
+            protected const string DeviceId = "1";
             protected ISmsClient SmsClient;
             protected ColdSpellEnteredNotificationHandler Handler;
             protected IConfiguration Configuration;

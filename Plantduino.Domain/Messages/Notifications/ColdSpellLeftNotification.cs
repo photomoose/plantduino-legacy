@@ -15,7 +15,7 @@ namespace Rumr.Plantduino.Domain.Messages.Notifications
             get { return LeftAt - EnteredAt; }
         }
 
-        public ColdSpellLeftNotification(int deviceId, double currentTemp, double coldSpellTemp, double minTemp, DateTime enteredAt, DateTime leftAt)
+        public ColdSpellLeftNotification(string deviceId, double currentTemp, double coldSpellTemp, double minTemp, DateTime enteredAt, DateTime leftAt)
         {
             CurrentTemp = currentTemp;
             ColdSpellTemp = coldSpellTemp;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Rumr.Plantduino.Domain.Configuration;
@@ -12,9 +13,9 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
     {
         private readonly IConfiguration _configuration;
         private readonly INotificationService _notificationService;
-        private bool _isColdSpell;
-        private DateTime _coldSpellEnteredAt;
-        private double _minTemp;
+        private readonly Dictionary<string, bool> _isColdSpell = new Dictionary<string, bool>();
+        private readonly Dictionary<string, DateTime> _coldSpellEnteredAt = new Dictionary<string, DateTime>();
+        private readonly Dictionary<string, double> _minTemp = new Dictionary<string, double>();
 
         public TemperatureTelemetryHandler(IConfiguration configuration, INotificationService notificationService)
         {
@@ -26,42 +27,44 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
         {
             Trace.TraceInformation("{0}: HANDLE: {1} {{Temperature: {2}}}.", message.DeviceId, message.GetType().Name, message.Temperature);
 
-            if (message.Temperature < _minTemp)
+            var deviceId = message.DeviceId;
+
+            if (_minTemp.ContainsKey(deviceId) && message.Temperature < _minTemp[deviceId])
             {
-                _minTemp = message.Temperature;
+                _minTemp[deviceId] = message.Temperature;
             }
 
-            if (message.Temperature <= _configuration.ColdSpellTemp && !_isColdSpell)
+            if (message.Temperature <= _configuration.ColdSpellTemp && (!_isColdSpell.ContainsKey(deviceId) || !_isColdSpell[deviceId]))
             {
                 Trace.TraceInformation("{0}: INFO: Entering cold spell.", message.DeviceId);
 
-                _isColdSpell = true;
-                _coldSpellEnteredAt = message.Timestamp;
-                _minTemp = message.Temperature;
+                _isColdSpell[deviceId] = true;
+                _coldSpellEnteredAt[deviceId] = message.Timestamp;
+                _minTemp[deviceId] = message.Temperature;
 
                 await _notificationService.RaiseAsync(
                     new ColdSpellEnteredNotification(
                         message.DeviceId,
                         message.Temperature,
                         _configuration.ColdSpellTemp,
-                        _coldSpellEnteredAt));
+                        _coldSpellEnteredAt[deviceId]));
             }
-            else if (message.Temperature > _configuration.ColdSpellTemp && _isColdSpell)
+            else if (message.Temperature > _configuration.ColdSpellTemp && _isColdSpell.ContainsKey(deviceId) && _isColdSpell[deviceId])
             {
                 var coldSpellLeftAt = message.Timestamp;
-                var coldSpellDuration = coldSpellLeftAt - _coldSpellEnteredAt;
+                var coldSpellDuration = coldSpellLeftAt - _coldSpellEnteredAt[deviceId];
 
                 Trace.TraceInformation("{0}: INFO: Leaving cold spell. {{Duration: {1}}}", message.DeviceId, coldSpellDuration);
 
-                _isColdSpell = false;
+                _isColdSpell[deviceId] = false;
 
                 await _notificationService.RaiseAsync(
                     new ColdSpellLeftNotification(
                         message.DeviceId,
                         message.Temperature,
-                        _configuration.ColdSpellTemp, 
-                        _minTemp, 
-                        _coldSpellEnteredAt,
+                        _configuration.ColdSpellTemp,
+                        _minTemp[deviceId],
+                        _coldSpellEnteredAt[deviceId],
                         coldSpellLeftAt));
             }
         }

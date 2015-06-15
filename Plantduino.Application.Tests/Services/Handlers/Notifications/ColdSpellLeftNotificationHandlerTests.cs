@@ -28,7 +28,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Notifications
         [Test]
         public async Task When_Message_Is_Handled_Then_Should_Send_Sms()
         {
-            const int deviceId = 1;
+            const string deviceId = "1";
             const double currentTemp = 1.0;
             const double coldSpellTemp = 2.0;
             const double minTemp = -5.0;

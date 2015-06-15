@@ -18,7 +18,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
             protected IConfiguration Configuration;
             protected INotificationService NotificationService;
             protected TemperatureTelemetryHandler Handler;
-            protected int DeviceId = 1;
+            protected string DeviceId = "1";
 
             [SetUp]
             protected void SetUp()

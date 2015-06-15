@@ -14,7 +14,7 @@ namespace Rumr.Plantduino.Domain.Messages
 
         public DateTime Timestamp { get; set; }
 
-        public int DeviceId { get; set; }
+        public string DeviceId { get; set; }
 
         [JsonIgnore]
         public Func<Task> CompletionTarget { get; set; }

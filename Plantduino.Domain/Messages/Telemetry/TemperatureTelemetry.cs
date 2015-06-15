@@ -4,7 +4,7 @@ namespace Rumr.Plantduino.Domain.Messages.Telemetry
     {
         public double Temperature { get; set; }
 
-        public static TemperatureTelemetry Create(int deviceId, double temp)
+        public static TemperatureTelemetry Create(string deviceId, double temp)
         {
             return new TemperatureTelemetry
             {

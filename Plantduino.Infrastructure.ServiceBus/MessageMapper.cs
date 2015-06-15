@@ -13,7 +13,7 @@ namespace Rumr.Plantduino.Infrastructure.ServiceBus
         {
             var json = new StreamReader(message.GetBody<Stream>(), Encoding.UTF8).ReadToEnd();
             var entity = JsonConvert.DeserializeObject<T>(json);
-            entity.DeviceId = (int)message.Properties["DeviceId"];
+            entity.DeviceId = (string)message.Properties["DeviceId"];
             entity.CompletionTarget = message.CompleteAsync;
 
             if (entity.Timestamp == DateTime.MinValue)
