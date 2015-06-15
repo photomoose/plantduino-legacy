@@ -9,7 +9,7 @@ sbs = ServiceBusService(
 	shared_access_key_name = key_name,
 	shared_access_key_value = key_value)
 
-msg = Message('{ "Temperature": ' + sys.argv[1] + ' }',
-	custom_properties = { 'DeviceId': 1, 'MessageType': 'TemperatureTelemetry' })
+msg = Message('{ "Temperature": ' + sys.argv[2] + ' }',
+	custom_properties = { 'DeviceId': int(sys.argv[1]), 'MessageType': 'TemperatureTelemetry' })
 
 sbs.send_topic_message('telemetry', msg)

@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+import sys
 import json
 import urllib2
 
+from azure import WindowsAzureError
 from azure.servicebus import ServiceBusService, Rule
 
 #service_namespace = 'plantduino-dev'
@@ -40,5 +42,5 @@ while True:
 				print 'Cold Spell LED: Off'
 
 			msg.delete()
-	except azure.WindowsAzureError as e:
-		print 'Azure Error: ', e
+	except:
+		print 'Notification Error: ', sys.exc_info()

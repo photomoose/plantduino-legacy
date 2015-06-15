@@ -1,11 +1,10 @@
 #!/bin/sh /etc/rc.common
 
 START=30
-
 start() {
         echo "Starting plantduino-notifications"
+	. /etc/profile
         python /root/notifications.py &
-        echo "Started plantduino-notifications"
 }
 
 stop() {
