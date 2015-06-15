@@ -44,13 +44,13 @@ void loop() {
   Console.println(dsTemp2, 1);
   
   if (dsTemp1 != previousTemp1 || (currentMillis - previousMillis) > 600000) {
-    SendTemperatureTelemetry(1, dsTemp1);      
+    SendTemperatureTelemetry(sensor1, dsTemp1);      
     previousTemp1 = dsTemp1;
     FlashLed();
   }
   
   if (dsTemp2 != previousTemp2 || (currentMillis - previousMillis) > 600000) {
-    SendTemperatureTelemetry(2, dsTemp2);      
+    SendTemperatureTelemetry(sensor2, dsTemp2);      
     previousTemp2 = dsTemp2;
     FlashLed();
   }  
@@ -75,14 +75,26 @@ void loop() {
   delay(500);
 }
 
-void SendTemperatureTelemetry(int deviceId, double temp) {
-    Console.print("Sending temperature telemetry: ");
-    Console.println(temp);
+
+void SendTemperatureTelemetry(byte* deviceId, double temp) {
+  String s = "";
+  
+  for (int i = 0; i < 8; i++) {
+    if (*deviceId < 0x10) {
+      s += "0";
+    }
+    s += String(*deviceId++, HEX);
+  }
+  
+  Console.print("Sending temperature telemetry for ");
+  Console.print(s);
+  Console.print(": ");
+  Console.println(temp);
    
     Process tempProcess;
     tempProcess.begin("python");
     tempProcess.addParameter("/root/temperature.py");
-    tempProcess.addParameter(String(deviceId));
+    tempProcess.addParameter(s);
     tempProcess.addParameter(String(temp));
     tempProcess.run();
 }
