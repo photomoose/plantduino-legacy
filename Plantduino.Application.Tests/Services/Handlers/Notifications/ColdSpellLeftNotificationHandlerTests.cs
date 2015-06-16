@@ -29,6 +29,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Notifications
         public async Task When_Message_Is_Handled_Then_Should_Send_Sms()
         {
             const string deviceId = "1";
+            const string sensorId = "inside";
             const double currentTemp = 1.0;
             const double coldSpellTemp = 2.0;
             const double minTemp = -5.0;
@@ -40,7 +41,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Notifications
             _configuration.SmsFrom.Returns(from);
             _configuration.SmsTo.Returns(to);
 
-            var msg = new ColdSpellLeftNotification(deviceId, currentTemp, coldSpellTemp, minTemp, enteredAtUtc, leftAtUtc);
+            var msg = new ColdSpellLeftNotification(deviceId, sensorId, currentTemp, coldSpellTemp, minTemp, enteredAtUtc, leftAtUtc);
 
             await _handler.HandleAsync(msg);
 

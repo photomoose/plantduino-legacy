@@ -19,6 +19,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
             protected INotificationService NotificationService;
             protected TemperatureTelemetryHandler Handler;
             protected string DeviceId = "1";
+            protected string SensorId = "inside";
 
             [SetUp]
             protected void SetUp()
@@ -33,7 +34,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
 
             protected TemperatureTelemetry CreateTemperatureTelemetry(double temp)
             {
-                var telemetry = TemperatureTelemetry.Create(DeviceId, temp);
+                var telemetry = TemperatureTelemetry.Create(DeviceId, SensorId, temp);
                 telemetry.Timestamp = new DateTime(2015, 1, 1, 0, 0, 0);
 
                 return telemetry;
@@ -98,6 +99,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Telemetry
                 notification.CurrentTemp.Should().Be(3.1);
                 notification.EnteredAt.Should().Be(_enteredAtUtc);
                 notification.LeftAt.Should().Be(endedAtUtc);
+                notification.SensorId.Should().Be(SensorId);
             }
 
             [Test]

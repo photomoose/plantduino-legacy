@@ -18,6 +18,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Notifications
         public abstract class ColdSpellEnteredNotificationHandlerFixture
         {
             protected const string DeviceId = "1";
+            protected const string SensorId = "inside";
             protected ISmsClient SmsClient;
             protected ColdSpellEnteredNotificationHandler Handler;
             protected IConfiguration Configuration;
@@ -38,7 +39,7 @@ namespace Rumr.Plantduino.Application.Tests.Services.Handlers.Notifications
 
             protected static ColdSpellEnteredNotification CreateNotification(double currentTemp, double coldSpellTemp, DateTime enteredAtUtc)
             {
-                return new ColdSpellEnteredNotification(DeviceId, currentTemp, coldSpellTemp, enteredAtUtc);
+                return new ColdSpellEnteredNotification(DeviceId, SensorId, currentTemp, coldSpellTemp, enteredAtUtc);
             }
         }
 

@@ -45,6 +45,7 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
                 await _notificationService.RaiseAsync(
                     new ColdSpellEnteredNotification(
                         message.DeviceId,
+                        message.SensorId,
                         message.Temperature,
                         _configuration.ColdSpellTemp,
                         _coldSpellEnteredAt[deviceId]));
@@ -61,6 +62,7 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
                 await _notificationService.RaiseAsync(
                     new ColdSpellLeftNotification(
                         message.DeviceId,
+                        message.SensorId,
                         message.Temperature,
                         _configuration.ColdSpellTemp,
                         _minTemp[deviceId],

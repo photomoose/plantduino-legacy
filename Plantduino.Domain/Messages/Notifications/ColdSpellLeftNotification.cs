@@ -9,13 +9,14 @@ namespace Rumr.Plantduino.Domain.Messages.Notifications
         public double MinTemp { get; private set; }
         public DateTime EnteredAt { get; private set; }
         public DateTime LeftAt { get; private set; }
+        public string SensorId { private set; get; }
 
         public TimeSpan Duration
         {
             get { return LeftAt - EnteredAt; }
         }
 
-        public ColdSpellLeftNotification(string deviceId, double currentTemp, double coldSpellTemp, double minTemp, DateTime enteredAt, DateTime leftAt)
+        public ColdSpellLeftNotification(string deviceId, string sensorId, double currentTemp, double coldSpellTemp, double minTemp, DateTime enteredAt, DateTime leftAt)
         {
             CurrentTemp = currentTemp;
             ColdSpellTemp = coldSpellTemp;
@@ -23,6 +24,7 @@ namespace Rumr.Plantduino.Domain.Messages.Notifications
             EnteredAt = enteredAt;
             LeftAt = leftAt;
             DeviceId = deviceId;
+            SensorId = sensorId;
         }
     }
 }
