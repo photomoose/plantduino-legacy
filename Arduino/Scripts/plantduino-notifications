@@ -1,6 +1,6 @@
 #!/bin/sh /etc/rc.common
 
-START=30
+START=99
 start() {
         echo "Starting plantduino-notifications"
 	. /etc/profile
