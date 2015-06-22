@@ -27,20 +27,20 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
         {
             Trace.TraceInformation("{0}: HANDLE: {1} {{Temperature: {2}}}.", message.DeviceId, message.GetType().Name, message.Temperature);
 
-            var deviceId = message.DeviceId;
+            var sensorId = message.SensorId;
 
-            if (_minTemp.ContainsKey(deviceId) && message.Temperature < _minTemp[deviceId])
+            if (_minTemp.ContainsKey(sensorId) && message.Temperature < _minTemp[sensorId])
             {
-                _minTemp[deviceId] = message.Temperature;
+                _minTemp[sensorId] = message.Temperature;
             }
 
-            if (message.Temperature <= _configuration.ColdSpellTemp && (!_isColdSpell.ContainsKey(deviceId) || !_isColdSpell[deviceId]))
+            if (message.Temperature <= _configuration.ColdSpellTemp && (!_isColdSpell.ContainsKey(sensorId) || !_isColdSpell[sensorId]))
             {
                 Trace.TraceInformation("{0}: INFO: Entering cold spell.", message.DeviceId);
 
-                _isColdSpell[deviceId] = true;
-                _coldSpellEnteredAt[deviceId] = message.Timestamp;
-                _minTemp[deviceId] = message.Temperature;
+                _isColdSpell[sensorId] = true;
+                _coldSpellEnteredAt[sensorId] = message.Timestamp;
+                _minTemp[sensorId] = message.Temperature;
 
                 await _notificationService.RaiseAsync(
                     new ColdSpellEnteredNotification(
@@ -48,16 +48,16 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
                         message.SensorId,
                         message.Temperature,
                         _configuration.ColdSpellTemp,
-                        _coldSpellEnteredAt[deviceId]));
+                        _coldSpellEnteredAt[sensorId]));
             }
-            else if (message.Temperature > _configuration.ColdSpellTemp && _isColdSpell.ContainsKey(deviceId) && _isColdSpell[deviceId])
+            else if (message.Temperature > _configuration.ColdSpellTemp && _isColdSpell.ContainsKey(sensorId) && _isColdSpell[sensorId])
             {
                 var coldSpellLeftAt = message.Timestamp;
-                var coldSpellDuration = coldSpellLeftAt - _coldSpellEnteredAt[deviceId];
+                var coldSpellDuration = coldSpellLeftAt - _coldSpellEnteredAt[sensorId];
 
                 Trace.TraceInformation("{0}: INFO: Leaving cold spell. {{Duration: {1}}}", message.DeviceId, coldSpellDuration);
 
-                _isColdSpell[deviceId] = false;
+                _isColdSpell[sensorId] = false;
 
                 await _notificationService.RaiseAsync(
                     new ColdSpellLeftNotification(
@@ -65,8 +65,8 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Telemetry
                         message.SensorId,
                         message.Temperature,
                         _configuration.ColdSpellTemp,
-                        _minTemp[deviceId],
-                        _coldSpellEnteredAt[deviceId],
+                        _minTemp[sensorId],
+                        _coldSpellEnteredAt[sensorId],
                         coldSpellLeftAt));
             }
         }
