@@ -1,3 +1,4 @@
+using System;
 using Microsoft.WindowsAzure;
 using Rumr.Plantduino.Domain.Configuration;
 
@@ -18,6 +19,16 @@ namespace Rumr.Plantduino.Application
         public string SmsTo
         {
             get { return CloudConfigurationManager.GetSetting("SmsTo"); }
+        }
+
+        public int MoistureMin
+        {
+            get { return int.Parse(CloudConfigurationManager.GetSetting("MoistureMin")); }
+        }
+
+        public TimeSpan IrrigationDuration
+        {
+            get { return TimeSpan.Parse(CloudConfigurationManager.GetSetting("IrrigationDuration")); }
         }
     }
 }

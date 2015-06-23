@@ -71,6 +71,7 @@ namespace Rumr.Plantduino.Worker
 #endif
             builder.RegisterType<TelemetryService>().As<ITelemetryService>();
             builder.RegisterType<NotificationService>().As<INotificationService>();
+            builder.RegisterType<CommandService>().As<ICommandService>();
             builder.RegisterType<ElasticIndexClient>().As<IIndexService>();
             builder.RegisterType<DateTimeProvider>().As<IDateTimeProvider>();
 

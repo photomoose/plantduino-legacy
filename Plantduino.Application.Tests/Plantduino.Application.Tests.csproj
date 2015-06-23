@@ -56,6 +56,7 @@
     <Compile Include="Services\Handlers\Notifications\ColdSpellLeftNotificationHandlerTests.cs" />
     <Compile Include="Services\Handlers\Notifications\ColdSpellEnteredNotificationHandlerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Handlers\Telemetry\MoistureTelemetryHandlerTests.cs" />
     <Compile Include="Services\Handlers\Telemetry\TemperatureTelemetryHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>

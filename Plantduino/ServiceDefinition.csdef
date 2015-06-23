@@ -10,6 +10,8 @@
       <Setting name="SmsFrom" />
       <Setting name="SmsTo" />
       <Setting name="SmsEnabled" />
+      <Setting name="MoistureMin" />
+      <Setting name="IrrigationDuration" />
     </ConfigurationSettings>
   </WorkerRole>
 </ServiceDefinition>

@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandService.cs" />
     <Compile Include="IServiceBusConfiguration.cs" />
     <Compile Include="ITopicManager.cs" />
     <Compile Include="ITopicPublisher.cs" />
