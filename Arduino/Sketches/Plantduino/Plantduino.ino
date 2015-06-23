@@ -47,6 +47,8 @@ void loop() {
   Console.print("Moisture: ");
   Console.print(moisture);
   Console.println("%");
+  Console.print("Timer: ");
+  Console.println(currentMillis - previousMillis);
   
 //  if (dsTemp1 != previousTemp1 || (currentMillis - previousMillis) > 600000) {
 //    SendTemperatureTelemetry("plantduino", "inside", dsTemp1);      

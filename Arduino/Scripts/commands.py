@@ -5,13 +5,13 @@ import ConfigParser
 from azure.servicebus import ServiceBusService, Rule
 
 config = ConfigParser.SafeConfigParser()
-config.read('config.ini')
+config.read('/root/config.ini')
 
 namespace = config.get('ServiceBus', 'Namespace')
 key_name = config.get('ServiceBus', 'KeyName')
 key_value = config.get('ServiceBus', 'KeyValue')
 
-sbs = ServiceBusService(service_namespace,
+sbs = ServiceBusService(namespace,
                         shared_access_key_name=key_name,
                         shared_access_key_value=key_value)
 

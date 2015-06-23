@@ -3,7 +3,7 @@ import ConfigParser
 from azure.servicebus import ServiceBusService, Message
 
 config = ConfigParser.SafeConfigParser()
-config.read('config.ini')
+config.read('/root/config.ini')
 
 namespace = config.get('ServiceBus', 'Namespace')
 key_name = config.get('ServiceBus', 'KeyName')
