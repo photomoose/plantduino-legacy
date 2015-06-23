@@ -1,14 +1,15 @@
 import json
 import urllib2
+import ConfigParser
 
 from azure.servicebus import ServiceBusService, Rule
 
-#service_namespace = 'plantduino-dev'
-#key_value = 'CbL51jGlxVFlWKlCjhxbNghW2Au/PqO5LRm3oRxF3k4='
+config = ConfigParser.SafeConfigParser()
+config.read('config.ini')
 
-service_namespace = 'plantduino'
-key_value = 'HOP2Zzu4S8v+1xN0b9nHwuCmVsJk4YJIi1R46hhL6tY='
-key_name = 'Arduino'
+namespace = config.get('ServiceBus', 'Namespace')
+key_name = config.get('ServiceBus', 'KeyName')
+key_value = config.get('ServiceBus', 'KeyValue')
 
 sbs = ServiceBusService(service_namespace,
                         shared_access_key_name=key_name,

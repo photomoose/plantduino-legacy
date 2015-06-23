@@ -1,9 +1,14 @@
 import sys
+import ConfigParser
 from azure.servicebus import ServiceBusService, Message
 
-namespace = 'plantduino'
-key_name = 'arduino'
-key_value = 'HOP2Zzu4S8v+1xN0b9nHwuCmVsJk4YJIi1R46hhL6tY='
+config = ConfigParser.SafeConfigParser()
+config.read('config.ini')
+
+namespace = config.get('ServiceBus', 'Namespace')
+key_name = config.get('ServiceBus', 'KeyName')
+key_value = config.get('ServiceBus', 'KeyValue')
+
 sbs = ServiceBusService(
 	namespace, 
 	shared_access_key_name = key_name,
