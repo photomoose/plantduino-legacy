@@ -30,3 +30,4 @@ _ReSharper*/
 /packages
 Plantduino/ServiceConfiguration.Cloud.cscfg
 Plantduino/ServiceConfiguration.Local.cscfg
+Arduino/Scripts/config.ini
