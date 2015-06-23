@@ -56,12 +56,14 @@ namespace Rumr.Plantduino.Worker
                 .As<ITopicManager>();
             builder.RegisterType<TemperatureTelemetryHandler>().As<IMessageHandler<TemperatureTelemetry>>();
             builder.RegisterType<LuxTelemetryHandler>().As<IMessageHandler<LuxTelemetry>>();
+            builder.RegisterType<MoistureTelemetryHandler>().As<IMessageHandler<MoistureTelemetry>>();
             builder.RegisterType<ColdSpellEnteredNotificationHandler>().As<IMessageHandler<ColdSpellEnteredNotification>>();
             builder.RegisterType<ColdSpellLeftNotificationHandler>().As<IMessageHandler<ColdSpellLeftNotification>>();
             builder.RegisterType<NotificationSubscription<ColdSpellEnteredNotification>>().As<ITopicSubscription>();
             builder.RegisterType<NotificationSubscription<ColdSpellLeftNotification>>().As<ITopicSubscription>();
             builder.RegisterType<TelemetrySubscription<TemperatureTelemetry>>().As<ITopicSubscription>();
             builder.RegisterType<TelemetrySubscription<LuxTelemetry>>().As<ITopicSubscription>();
+            builder.RegisterType<TelemetrySubscription<MoistureTelemetry>>().As<ITopicSubscription>();
 #if !DEBUG
             builder.RegisterType<TwilioSmsClient>().As<ISmsClient>();
 #else

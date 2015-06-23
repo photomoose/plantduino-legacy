@@ -24,6 +24,7 @@ namespace Rumr.Plantduino.Infrastructure.Elastic
 #else
             settings.MapDefaultTypeIndices(d => d.Add(typeof(TemperatureTelemetry), "telemetry"));
             settings.MapDefaultTypeIndices(d => d.Add(typeof(LuxTelemetry), "telemetry"));
+            settings.MapDefaultTypeIndices(d => d.Add(typeof(MoistureTelemetry), "telemetry"));
             settings.MapDefaultTypeIndices(d => d.Add(typeof(ColdSpellEnteredNotification), "notification"));
             settings.MapDefaultTypeIndices(d => d.Add(typeof(ColdSpellLeftNotification), "notification"));
 #endif

@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Configuration\IConfiguration.cs" />
     <Compile Include="Messages\Notifications\NotificationMessage.cs" />
+    <Compile Include="Messages\Telemetry\MoistureTelemetry.cs" />
     <Compile Include="Messages\Telemetry\TelemetryMessage.cs" />
     <Compile Include="Services\IIndexService.cs" />
     <Compile Include="Services\IMessageHandler.cs" />
