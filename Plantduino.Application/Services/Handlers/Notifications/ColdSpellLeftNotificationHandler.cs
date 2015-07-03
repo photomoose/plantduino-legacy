@@ -13,19 +13,21 @@ namespace Rumr.Plantduino.Application.Services.Handlers.Notifications
         private readonly ISmsClient _smsClient;
         private readonly IConfiguration _configuration;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly ITimeZone _timeZone;
 
         public ColdSpellLeftNotificationHandler(ISmsClient smsClient, IConfiguration configuration, IDateTimeProvider dateTimeProvider)
         {
             _smsClient = smsClient;
             _configuration = configuration;
             _dateTimeProvider = dateTimeProvider;
+            _timeZone = new GmtTimeZone();
         }
 
         public Task HandleAsync(ColdSpellLeftNotification message)
         {
             Trace.TraceInformation("{0}: HANDLE: {1} {{Temp: {2}, LeftAt: {3}, Duration: {4}}}.", message.DeviceId, message.GetType().Name, message.CurrentTemp, message.LeftAt, message.Duration);
 
-            var leftAtLocal = _dateTimeProvider.ToLocalTime(message.LeftAt);
+            var leftAtLocal = _timeZone.ToLocalTime(message.LeftAt);
 
             _smsClient.Send(
                 _configuration.SmsFrom, 

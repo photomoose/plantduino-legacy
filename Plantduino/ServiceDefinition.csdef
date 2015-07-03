@@ -12,6 +12,7 @@
       <Setting name="SmsEnabled" />
       <Setting name="MoistureMin" />
       <Setting name="IrrigationDuration" />
+      <Setting name="StorageConnectionString" />
     </ConfigurationSettings>
   </WorkerRole>
 </ServiceDefinition>

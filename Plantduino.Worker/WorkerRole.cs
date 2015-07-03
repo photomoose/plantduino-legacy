@@ -16,10 +16,12 @@ using Rumr.Plantduino.Domain;
 using Rumr.Plantduino.Domain.Configuration;
 using Rumr.Plantduino.Domain.Messages.Notifications;
 using Rumr.Plantduino.Domain.Messages.Telemetry;
+using Rumr.Plantduino.Domain.Repositories;
 using Rumr.Plantduino.Domain.Services;
 using Rumr.Plantduino.Domain.Sms;
 using Rumr.Plantduino.Infrastructure.Elastic;
 using Rumr.Plantduino.Infrastructure.ServiceBus;
+using Rumr.Plantduino.Infrastructure.Storage;
 
 namespace Rumr.Plantduino.Worker
 {
@@ -74,6 +76,8 @@ namespace Rumr.Plantduino.Worker
             builder.RegisterType<CommandService>().As<ICommandService>();
             builder.RegisterType<ElasticIndexClient>().As<IIndexService>();
             builder.RegisterType<DateTimeProvider>().As<IDateTimeProvider>();
+
+            builder.RegisterType<ColdSpellRepository>().As<IColdSpellRepository>();
 
             var container = builder.Build();
 

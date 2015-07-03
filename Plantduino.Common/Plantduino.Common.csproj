@@ -40,7 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DateTimeProvider.cs" />
+    <Compile Include="GmtTimeZone.cs" />
     <Compile Include="IDateTimeProvider.cs" />
+    <Compile Include="ITimeZone.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
