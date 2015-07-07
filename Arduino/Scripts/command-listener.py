@@ -25,6 +25,7 @@ handler = logging.handlers.TimedRotatingFileHandler(
               LOG_FILENAME, when='midnight', backupCount=5, utc=True)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
+logger.info("Starting commands listener.")
 
 config = ConfigParser.SafeConfigParser()
 config.read('/root/config.ini')
@@ -32,6 +33,14 @@ config.read('/root/config.ini')
 namespace = config.get('ServiceBus', 'Namespace')
 key_name = config.get('ServiceBus', 'KeyName')
 key_value = config.get('ServiceBus', 'KeyValue')
+arduino_username = config.get('Arduino', 'Username')
+arduino_password = config.get('Arduino', 'Password')
+
+pwd_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+pwd_mgr.add_password("arduino", "http://localhost/mailbox/", arduino_username, arduino_password)
+handler = urllib2.HTTPBasicAuthHandler(pwd_mgr)
+opener = urllib2.build_opener(handler)
+urllib2.install_opener(opener)
 
 try:
 	sbs = ServiceBusService(namespace,
@@ -43,7 +52,7 @@ try:
 	while True:
 		try:
 			msg = sbs.receive_subscription_message('commands', 'arduino')
-		
+
 			if msg.body:
 				obj = json.loads(msg.body)
 
@@ -51,8 +60,8 @@ try:
 				logger.debug(obj)
 
 				if msg.custom_properties['messagetype'] == 'IrrigateCommand':
-					urllib2.urlopen('http://localhost/mailbox/irrigate')
-					logger.info('Irrigation: On')
+					urllib2.urlopen('http://localhost/mailbox/irrigate:' + str(obj["Duration"]))
+					logger.info('Irrigation: On (' + str(obj["Duration"]) + ')')
 					msg.delete()
 				else:
 					logger.warn('Unrecognised message type: ' + msg.custom_properties['messagetype'])
