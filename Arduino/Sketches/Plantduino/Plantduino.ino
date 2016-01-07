@@ -1,30 +1,39 @@
 #include <Console.h>
 #include <Mailbox.h>
 #include <DS18B20.h>
+#include <LiquidCrystal.h>
 
 byte sensor1[8] = { 0x28, 0xFF, 0x97, 0x75, 0x70, 0x14, 0x04, 0xDE };
 byte sensor2[8] = { 0x28, 0xFF, 0x92, 0x59, 0x70, 0x14, 0x04, 0x6E };
 DS18B20* ds1;
 DS18B20* ds2;
+LiquidCrystal lcd(12, 11, 7, 6, 5, 4);
 
 const int MOISTURE_PIN = A0;
 const int TEMP_PIN = 2;
 const int LED_PIN = 13;
 const int BLUE_LED_PIN = 3;
+const int RED_LED_PIN = 4;
 const int MOISTURE_MAX = 1000;
 
 float previousTemp1 = 0;
 float previousTemp2 = 0;
 unsigned long previousMillis = 0;
+unsigned long irrigationEnd = 0;
+bool isIrrigationOn = false;
 
 void setup() {
   pinMode(LED_PIN, OUTPUT);
   pinMode(BLUE_LED_PIN, OUTPUT);
+  pinMode(RED_LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
   digitalWrite(BLUE_LED_PIN, LOW);
+  digitalWrite(RED_LED_PIN, LOW);
   
   ds1 = new DS18B20(TEMP_PIN, sensor1);
   ds2 = new DS18B20(TEMP_PIN, sensor2);
+  
+  lcd.begin(16, 2);
   
   Bridge.begin();
   Console.begin();
@@ -50,6 +59,13 @@ void loop() {
   Console.print("Timer: ");
   Console.println(currentMillis - previousMillis);
   
+//  lcd.setCursor(0, 0);
+//  lcd.print("Inside: ");
+//  lcd.print(dsTemp1);
+//  lcd.setCursor(0, 1);
+//  lcd.print("Outside: ");
+//  lcd.print(dsTemp2);
+  
 //  if (dsTemp1 != previousTemp1 || (currentMillis - previousMillis) > 600000) {
 //    SendTemperatureTelemetry("plantduino", "inside", dsTemp1);      
 //    previousTemp1 = dsTemp1;
@@ -72,6 +88,12 @@ void loop() {
     previousMillis = currentMillis;
   }
   
+  if (isIrrigationOn && currentMillis > irrigationEnd) {
+    digitalWrite(RED_LED_PIN, LOW);
+    isIrrigationOn = false;
+    Console.println("Irrigation LED: Off"); 
+  }
+  
   while (Mailbox.messageAvailable())
   {
     Mailbox.readMessage(message);
@@ -80,8 +102,15 @@ void loop() {
     
     if (message == "coldspellledon") {
       digitalWrite(BLUE_LED_PIN, HIGH);
-    } else {
+      Console.println("Cold Spell LED: On");
+    } else if (message == "coldspellledoff") {
       digitalWrite(BLUE_LED_PIN, LOW);
+      Console.println("Cold Spell LED: Off");
+    } else if (message.startsWith("irrigate")) {
+      irrigationEnd = millis() + message.substring(9).toInt();
+      isIrrigationOn = true;
+      digitalWrite(RED_LED_PIN, HIGH);
+      Console.println("Irrigation LED: On");      
     }
   }  
   
