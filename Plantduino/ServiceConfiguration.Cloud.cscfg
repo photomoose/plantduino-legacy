@@ -7,10 +7,13 @@
       <Setting name="Microsoft.ServiceBus.ConnectionString" value="" />
       <Setting name="TwilioAccountSid" value="" />
       <Setting name="TwilioAuthToken" value="" />
-      <Setting name="ColdSpellTemp" value="2.0" />
+      <Setting name="ColdSpellTemp" value="19.0" />
       <Setting name="SmsFrom" value="" />
       <Setting name="SmsTo" value="" />
-      <Setting name="SmsEnabled" value="True" />    
+      <Setting name="SmsEnabled" value="True" />
+      <Setting name="MoistureMin" value="70" />
+      <Setting name="IrrigationDuration" value="00:01:00" />
+      <Setting name="StorageConnectionString" value="" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>
